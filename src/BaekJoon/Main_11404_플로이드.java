@@ -25,8 +25,8 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main_11404_플로이드 {
-	static int city, bus, scity, ecity, cost, mincost;
-	static int[][] costarr, getcostarr;
+	static int city, bus, scity, ecity, cost, max=Integer.MAX_VALUE>>1;
+	static int[][] costarr;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_11404_플로이드.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,7 +34,6 @@ public class Main_11404_플로이드 {
 		city = Integer.parseInt(br.readLine());
 		bus = Integer.parseInt(br.readLine());
 		costarr = new int[city][city];
-		getcostarr = new int[city][city];
 		
 		for(int i=0; i<bus; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -50,21 +49,31 @@ public class Main_11404_플로이드 {
 		
 		for(int i=0; i<city; i++) {
 			for(int j=0; j<city; j++) {
-				System.out.print(costarr[i][j]+" ");
+				if(i!=j && costarr[i][j]==0) {
+					costarr[i][j] = max;
+				}
 			}
-			System.out.println();
+		}
+		for (int k = 0; k<city; k++) {
+			for(int i=0; i<city; i++) {
+				for(int j=0; j<city; j++){
+					if(i==j)continue;
+					if(costarr[i][j]>costarr[i][k]+costarr[k][j]) {
+						costarr[i][j] = costarr[i][k]+costarr[k][j];
+					}
+				}
+			}
 		}
 		
 		for(int i=0; i<city; i++) {
 			for(int j=0; j<city; j++) {
-				if(i!=j) {
-					mincost = Integer.MAX_VALUE;
-					getcostarr[i][j] = getcost(i,j);
-				}
+				if(costarr[i][j]==max)
+					System.out.print(0+" ");
+				else
+					System.out.print(costarr[i][j]+" ");
 			}
+			System.out.println();
 		}
-	}
-	private static int getcost(int r, int c) {
-		return 1;
-	}
+		
+	}	
 }
