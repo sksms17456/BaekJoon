@@ -82,5 +82,4 @@ public class Main_2589_보물섬 {
 		}
 		return false;
 	}
-
 }
