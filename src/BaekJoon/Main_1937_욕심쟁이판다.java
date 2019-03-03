@@ -25,11 +25,50 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main_1937_욕심쟁이판다 {
+	static int N, max;
+	static int[][] forest, dp;
+	static int[][] pos = {{-1,0},{1,0},{0,1},{0,-1}};
 	public static void main(String[] args) throws Exception{
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_1937_욕심쟁이판다.txt"));
+		N = Integer.parseInt(br.readLine());
+		forest = new int[N][N];
+		dp = new int[N][N];
+		StringTokenizer st;
 		
+		for(int i=0; i<N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j=0; j<N; j++) { 
+				forest[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<N; j++) {
+				max = Math.max(find(i,j), max);
+			}
+		}
+		System.out.println(max);
+	}
+	private static int find(int r, int c) {
+		if(dp[r][c]==0) {
+			dp[r][c]=1;
+			for(int i=0; i<4; i++) {
+				int nr = r+pos[i][0];
+				int nc = c+pos[i][1];
+				if(isOk(nr,nc) && forest[nr][nc]>forest[r][c]) {
+					dp[r][c] = Math.max(dp[r][c], find(nr,nc)+1);
+				}
+			}
+		}
+		return dp[r][c];
+	}
+	private static boolean isOk(int r, int c) {
+		if(r>=0 && c>=0 && r<N && c<N) {
+			return true;
+		}
+		return false;
 	}
 }
