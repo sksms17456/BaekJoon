@@ -33,6 +33,7 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -61,9 +62,8 @@ public class Main_16920_확장게임 {
 		for(int i=1; i<S.length; i++) {
 			S[i] = Integer.parseInt(st.nextToken());
 		}
-		
-		field = new char[N][M];
 		visit = new boolean[N][M];
+		field = new char[N][M];
 		for(int i=0 ;i<N; i++) {
 			field[i] = br.readLine().toCharArray();
 			for(int j=0; j<M; j++) {
@@ -80,33 +80,24 @@ public class Main_16920_확장게임 {
 				idx=1;
 			int cnt = queue[idx].size();
 			while(cnt>0) {
-				int[] temp = queue[idx].poll();
-				extend(temp[0],temp[1],0);
+				int temp[] = queue[idx].poll();
+				extend(temp[0],temp[1]);
 				cnt--;
 			}
-			idx++;			
+			idx++;
 		}
+		System.out.println(queue[1].size());
+		for(int i=0; i<N; i++) {
+			System.out.println(Arrays.toString(field[i]));
+		}
+		
 		for(int i=1; i<P+1; i++) {
 			System.out.print(p[i]+" ");
 		}
 	}
-	private static void extend(int r, int c, int cnt) {
-		if(cnt==S[idx]) {
-			if(field[r][c]=='.') {
-				field[r][c]=(char)(idx+'0');
-				queue[idx].offer(new int[] {r,c});
-				p[idx]++;
-				breakcnt--;
-			}	
-			return;
-		}
-		for(int i=0; i<4; i++) {
-			int nr = r+pos[i][0];
-			int nc = c+pos[i][1];
-			if(isOk(nr,nc)&&!visit[nr][nc]) {
-				extend(nr,nc,cnt+1);
-			}			
-		}
+	private static void extend(int r, int c) {
+		
+		
 	}
 	private static boolean isOk(int r, int c) {
 		if(r>=0 && c>=0 && r<N && c<M && (field[r][c]=='.' || field[r][c]==(char)(idx+'0'))) {

@@ -8,7 +8,7 @@ public class Main_16922_로마숫자만들기{
 	static int[] roma = {1,5,10,50};
 	public static void main(String[] args) throws Exception{
 //		BufferedReader br = new BufferedReader(new FileReader("res/Main_16922_로마숫자만들기.txt"));
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		
 		comb(0,0,0);

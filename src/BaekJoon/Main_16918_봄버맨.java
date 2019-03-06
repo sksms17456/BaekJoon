@@ -50,7 +50,7 @@ import java.util.StringTokenizer;
 
 public class Main_16918_봄버맨 {
 	static int R, C, N, ni, nj;
-	static char[][] bomb, allbomb, nextbomb;
+	static char[][] bomb;
 	static int[][] pos = {{-1,0},{1,0},{0,1},{0,-1}};
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16918_봄버맨.txt"));
@@ -60,32 +60,12 @@ public class Main_16918_봄버맨 {
 		C = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
 		bomb = new char[R][C];
-		allbomb = new char[R][C];
-		nextbomb = new char[R][C];
 		
 		for(int i=0; i<R; i++) {
 			bomb[i] = br.readLine().toCharArray();
 		}
 		
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				allbomb[i][j] = 'O';
-			}
-		}
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				if(bomb[i][j]=='O') {
-					nextbomb[i][j] = '.';
-					for(int k=0; k<4; k++) {
-						ni = i+pos[k][0];
-						nj = j+pos[k][1];
-						if(isOk(ni,nj)) {
-							nextbomb[ni][nj] = '.';
-						}
-					}
-				}
-			}
-		}
+		
 					
 	}
 	private static boolean isOk(int x, int y) {

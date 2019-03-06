@@ -34,27 +34,78 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_7576_토마토 {
-	static int N, M;
+	static int N, M, day;
 	static int[][] Box;
+	static int[][] pos= {{-1,0},{1,0},{0,1},{0,-1}};
+	static boolean isGo, isNot;
+	static LinkedList<int[]> queue = new LinkedList<>();
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_7576_토마토.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		M = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
-		
 		Box = new int[N][M];
 		
 		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<M; j++) {
 				Box[i][j] = Integer.parseInt(st.nextToken());
-			}
+				if(Box[i][j]==0) {
+					isGo = true;
+				}
+			}		
 		}
-		
-		
+		if(isGo) {
+			for(int i=0; i<N; i++) {
+				for(int j=0; j<M; j++) {
+					if(Box[i][j]==1)
+						queue.offer(new int[] {i,j,0});
+				}
+			}
+			bfs();
+			top:
+			for(int i=0; i<N; i++) {
+				for(int j=0; j<M; j++) {
+					if(Box[i][j]==0) {
+						isNot=true;
+						break top;
+					}
+				}
+			}
+			if(isNot) {
+				System.out.println("-1");
+			}else {
+				System.out.println(day);
+			}
+			
+		}else {
+			System.out.println(0);
+		}
+	}
+	private static void bfs() {
+		int[] temp=new int[3];
+		while(!queue.isEmpty()) {
+			temp = queue.poll();
+			for(int i=0; i<4; i++) {
+				int nr = temp[0]+pos[i][0];
+				int nc = temp[1]+pos[i][1];
+				if(isOk(nr,nc)) {
+					Box[nr][nc]=1;
+					queue.offer(new int[] {nr,nc,temp[2]+1});
+				}
+			}
+			day = Math.max(day, temp[2]);
+		}
+	}
+	private static boolean isOk(int r, int c) {
+		if(r>=0 && c>=0 && r<N && c<M && Box[r][c]==0) {
+			return true;
+		}
+		return false;
 	}
 }

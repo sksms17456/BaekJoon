@@ -25,22 +25,21 @@
 package BaekJoon;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main_16971_배열B의값 {
-	static int N, M, cnt=2, max=Integer.MIN_VALUE, rowi, rowj, sum;
-	static int[][] A, B;
-	static int[] arr = {0,0};
+	static int N, M, sum, rsum, csum, ans;
+	static int[][] A;
+	static int[] R, C;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16971_배열B의값.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
+		R = new int[N];
+		C = new int[M];
 		A = new int[N][M];
-		B = new int[N-1][M-1];
 		
 		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -49,27 +48,64 @@ public class Main_16971_배열B의값 {
 			}
 		}
 		
-		perm(0,0);
-		
-		
-		
-	}
-	private static void sum(int i, int j) {
-		sum=0;
-		for(int r=0; r<N-1; r++) {
+		if(N==2 && M==2) {
+			ans = A[0][0]+A[0][1]+A[1][1]+A[1][0];
+		}else {
 			
+			for(int i=0; i<N; i++) {
+				for (int j=0; j<M; j++) {
+					if(i==0 || i==N-1) {
+						if(j==0 || j==M-1) {
+							R[i]+=A[i][j];
+						}else {
+							R[i]+=A[i][j]*2;
+						}
+					}else {
+						if(j==0 || j==M-1) {
+							R[i]+=A[i][j]*2;
+						}else {
+							R[i]+=A[i][j]*4;
+						}
+					}
+				}
+			}
+			
+			for(int i=0; i<M; i++) {
+				for (int j=0; j<N; j++) {
+					if(j==0 || j==N-1) {
+						if(i==0 || i==M-1) {
+							C[i]+=A[j][i];
+						}else {
+							C[i]+=A[j][i]*2;
+						}
+					}else {
+						if(i==0 || i==M-1) {
+							C[i]+=A[j][i]*2;
+						}else {
+							C[i]+=A[j][i]*4;
+						}
+					}
+				}
+			}
+			for(int i=0; i<N; i++) {
+				sum+=R[i];
+			}
+			int rmax = Math.max(R[0], R[N-1]);
+			int rmin = Integer.MAX_VALUE;
+			int cmax = Math.max(C[0], C[M-1]);
+			int cmin = Integer.MAX_VALUE;
+			
+			for(int i=1; i<N-1; i++) {
+				rmin = Math.min(rmin, R[i]);	
+			}
+			for(int i=1; i<M-1; i++) {
+				cmin = Math.min(cmin, C[i]);
+			}		
+			rsum = sum+rmax-rmin/2;
+			csum = sum+cmax-cmin/2;
+			ans = Math.max(rsum, csum);
+			ans = Math.max(sum, ans);
 		}
-	}
-	private static void perm(int start, int idx) {
-		if(cnt==idx) {
-			System.out.println(Arrays.toString(arr));
-			rowi = arr[0];
-			rowj = arr[1];
-			return;
-		}
-		for(int i=start; i<M; i++) {	
-			arr[idx] = i;
-			perm(i+1, idx+1);
-		}
+		System.out.println(ans);
 	}
 }

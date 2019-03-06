@@ -1,77 +1,62 @@
 package BaekJoon;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int[][] pos = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-	static char[][] map;
-	static boolean[][] visited;
-	static int L, W, max;
-
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String[] input = br.readLine().split(" ");
 
-		L = Integer.parseInt(input[0]);
-		W = Integer.parseInt(input[1]);
-		map = new char[L][W];
-		visited = new boolean[L][W];
-
-		for (int i = 0; i < L; i++) {
-			map[i] = br.readLine().toCharArray();
-		}
-
-//		for (int i = 0; i < L; i++) {
-//			for (int j = 0; j < W; j++) {
-//				if (map[i][j] == 'L') {
-//					bfs(i, j);
-//                    for(int k=0; k<L; k++){
-//                        Arrays.fill(visited[k],false);
-//                    }
-//				}
-//			}
-//		}
-		bfs(3,0);
-		System.out.println(max);
-	}
-
-	private static void bfs(int row, int col) {
-		Queue<int[]> queue = new LinkedList<>();
-		queue.offer(new int[] { row, col, 0 });
-
-		int[] temp;
-		int nr, nc, dist = 0;
-
-		while (!queue.isEmpty()) {
-			temp = queue.poll();
-			
-			nr = temp[0];
-			nc = temp[1];
-			dist = temp[2];
-
-			if (visited[nr][nc]) {
-				continue;
-			}
-			
-			visited[nr][nc] = true;
-
-			for (int i = 0; i < pos.length; i++) {
-				nr = temp[0] + pos[i][0];
-				nc = temp[1] + pos[i][1];
-
-				if (nr >= 0 && nr < L && nc >= 0 && nc < W) {
-					if (map[nr][nc] == 'L'&&!visited[nr][nc]) {
-						queue.offer(new int[] { nr, nc, temp[2] + 1 });
+		String[] NM = br.readLine().split(" ");
+		int N = Integer.parseInt(NM[0]);
+		int M = Integer.parseInt(NM[1]);
+		int[][] A = new int[N][M];
+		int[] Col = new int[M];
+		int[] Row = new int[N];
+		for (int i = 0; i < N; i++) {
+			String[] line = br.readLine().split(" ");
+			for (int j = 0; j < M; j++) {
+				A[i][j] = Integer.parseInt(line[j]);
+				
+				if(i==0 || j==0 || i==N-1 || j==M-1) {
+					if((i==0 && j==0) || (i==0 && j==M-1) || (j==0 && i==N-1) || (i==N-1 && j==M-1)) {
+						Col[j] += A[i][j];
+						Row[i] += A[i][j];
 					}
+					else {
+						Col[j] += A[i][j] * 2;
+						Row[i] += A[i][j] * 2;
+					}
+				}
+				else {
+					Col[j] += A[i][j] * 4;
+					Row[i] += A[i][j] * 4;
 				}
 			}
 		}
-		System.out.println(row+" "+col+" "+dist);
-		max = Math.max(max, dist);
+		
+		int Sum = 0;
+		for(int i=0; i<N; i++) {
+			Sum += Row[i];
+		}
+		
+		/** 세로 */
+		int Mosery = Math.max(Col[0], Col[M-1]);
+		int Min = Integer.MAX_VALUE;
+		for(int j=1; j<M-1; j++) {
+			Min = Math.min(Min, Col[j]);
+		}
+		int Answer = Sum;
+		Answer = Math.max(Answer, Sum - Min/2 + Mosery);
+		
+		/** 가로 */
+		Mosery = Math.max(Row[0], Row[N-1]);
+		Min = Integer.MAX_VALUE;
+		for(int i=1; i<N-1; i++) {
+			Min = Math.min(Min, Row[i]);
+		}
+		Answer = Math.max(Answer, Sum - Min/2 + Mosery);
+		
+		System.out.println(Answer);
 	}
 }
