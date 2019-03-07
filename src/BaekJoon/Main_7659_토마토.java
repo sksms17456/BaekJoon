@@ -42,15 +42,14 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_7659_토마토 {
-	static int N, M, H, day;
+	static int N, M, H, day, cnt;
 	static int[][][] Box;
 	static int[][][] pos = {{{0,-1,0},{0,1,0},{0,0,1},{0,0,-1},{1,0,0},{-1,0,0}}};
-	static boolean isGo, isNot;
 	static LinkedList<int[]> queue = new LinkedList<>();
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_7659_토마토.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine().trim());
 		M = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
 		H = Integer.parseInt(st.nextToken());
@@ -61,34 +60,17 @@ public class Main_7659_토마토 {
 				st = new StringTokenizer(br.readLine().trim());
 				for(int j=0; j<M; j++) {
 					Box[h][i][j] = Integer.parseInt(st.nextToken());
-					if(Box[h][i][j]==0) {
-						isGo = true;
+					if(Box[h][i][j]==1) {
+						queue.offer(new int[] {h,i,j,0});
+					}else if(Box[h][i][j]==0) {
+						cnt++;
 					}
 				}
 			}
 		}	
-		if(isGo) {
-			for(int h=0; h<H; h++) {
-				for(int i=0; i<N; i++) {
-					for(int j=0; j<M; j++) {
-						if(Box[h][i][j]==1)
-							queue.offer(new int[] {h,i,j,0});
-					}
-				}
-			}
+		if(!queue.isEmpty()) {
 			bfs();
-			top:
-			for(int h=0; h<H; h++) {
-				for(int i=0; i<N; i++) {
-					for(int j=0; j<M; j++) {
-						if(Box[h][i][j]==0) {
-							isNot=true;
-							break top;
-						}
-					}
-				}
-			}
-			if(isNot) {
+			if(cnt>0) {
 				System.out.println("-1");
 			}else {
 				System.out.println(day);
@@ -107,11 +89,12 @@ public class Main_7659_토마토 {
 				int nc = temp[2]+pos[0][i][2];
 				if(isOk(nh,nr,nc)) {
 					Box[nh][nr][nc]=1;
+					cnt--;
 					queue.offer(new int[] {nh,nr,nc,temp[3]+1});
 				}
 			}
-			day = Math.max(day, temp[3]);
 		}
+		day = temp[3];
 	}
 	private static boolean isOk(int h, int r, int c) {
 		if(r>=0 && c>=0 && h>=0 && r<N && c<M && h<H && Box[h][r][c]==0) {

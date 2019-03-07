@@ -43,6 +43,8 @@ public class Main_16920_확장게임 {
 	static int[][] pos = {{-1,0},{1,0},{0,1},{0,-1}};
 	static char[][] field;
 	static boolean[][] visit;
+	static boolean[] qempty;
+	static boolean isgo=false;
 	static LinkedList<int[]>[] queue;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16920_확장게임.txt"));
@@ -58,6 +60,7 @@ public class Main_16920_확장게임 {
 		}
 		p = new int[P+1];
 		S = new int[P+1];
+		qempty = new boolean[P+1];
 		st = new StringTokenizer(br.readLine());
 		for(int i=1; i<S.length; i++) {
 			S[i] = Integer.parseInt(st.nextToken());
@@ -70,34 +73,53 @@ public class Main_16920_확장게임 {
 				if(Character.isDigit(field[i][j])) {
 					p[field[i][j]-'0']++;
 					queue[field[i][j]-'0'].offer(new int[] {i,j});
-				}else if(field[i][j]=='.'){
-					breakcnt++;
+					visit[i][j] = true;
 				}
 			}
 		}
-		while(breakcnt>0) {
+		
+		while(true) {
+			isgo=false;
 			if(idx>P)
 				idx=1;
-			int cnt = queue[idx].size();
-			while(cnt>0) {
-				int temp[] = queue[idx].poll();
-				extend(temp[0],temp[1]);
-				cnt--;
+			if(!queue[idx].isEmpty()) {
+				int cnt=0;
+				while(cnt<S[idx]) {
+					int size = queue[idx].size();			
+					for(int s=0; s<size; s++) {
+						int[] temp = new int[2];
+						temp = queue[idx].poll();
+						for(int i=0; i<4; i++) {
+							int nr = temp[0]+pos[i][0];
+							int nc = temp[1]+pos[i][1];
+							if(isOk(nr,nc) && !visit[nr][nc]) {
+								queue[idx].offer(new int[] {nr,nc});
+								field[nr][nc] = (char)(idx+'0');
+								p[idx]++;
+								visit[nr][nc] = true;
+							}
+						}
+					}
+					cnt++;
+				}
+			}
+			if(queue[idx].isEmpty()) {
+				qempty[idx] = true;
+			}
+			for(int i=1; i<=P; i++) {
+				if(!qempty[i]) {
+					isgo=true;
+					break;
+				}
+			}
+			if(!isgo) {
+				break;
 			}
 			idx++;
 		}
-		System.out.println(queue[1].size());
-		for(int i=0; i<N; i++) {
-			System.out.println(Arrays.toString(field[i]));
-		}
-		
 		for(int i=1; i<P+1; i++) {
 			System.out.print(p[i]+" ");
 		}
-	}
-	private static void extend(int r, int c) {
-		
-		
 	}
 	private static boolean isOk(int r, int c) {
 		if(r>=0 && c>=0 && r<N && c<M && (field[r][c]=='.' || field[r][c]==(char)(idx+'0'))) {

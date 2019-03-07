@@ -1,62 +1,66 @@
 package BaekJoon;
 
 import java.io.*;
-import java.util.*;
-
-public class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-		String[] NM = br.readLine().split(" ");
-		int N = Integer.parseInt(NM[0]);
-		int M = Integer.parseInt(NM[1]);
-		int[][] A = new int[N][M];
-		int[] Col = new int[M];
-		int[] Row = new int[N];
-		for (int i = 0; i < N; i++) {
-			String[] line = br.readLine().split(" ");
-			for (int j = 0; j < M; j++) {
-				A[i][j] = Integer.parseInt(line[j]);
-				
-				if(i==0 || j==0 || i==N-1 || j==M-1) {
-					if((i==0 && j==0) || (i==0 && j==M-1) || (j==0 && i==N-1) || (i==N-1 && j==M-1)) {
-						Col[j] += A[i][j];
-						Row[i] += A[i][j];
-					}
-					else {
-						Col[j] += A[i][j] * 2;
-						Row[i] += A[i][j] * 2;
-					}
-				}
-				else {
-					Col[j] += A[i][j] * 4;
-					Row[i] += A[i][j] * 4;
-				}
-			}
-		}
-		
-		int Sum = 0;
-		for(int i=0; i<N; i++) {
-			Sum += Row[i];
-		}
-		
-		/** 세로 */
-		int Mosery = Math.max(Col[0], Col[M-1]);
-		int Min = Integer.MAX_VALUE;
-		for(int j=1; j<M-1; j++) {
-			Min = Math.min(Min, Col[j]);
-		}
-		int Answer = Sum;
-		Answer = Math.max(Answer, Sum - Min/2 + Mosery);
-		
-		/** 가로 */
-		Mosery = Math.max(Row[0], Row[N-1]);
-		Min = Integer.MAX_VALUE;
-		for(int i=1; i<N-1; i++) {
-			Min = Math.min(Min, Row[i]);
-		}
-		Answer = Math.max(Answer, Sum - Min/2 + Mosery);
-		
-		System.out.println(Answer);
-	}
+import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+ 
+public class Main{
+    static int N, M, H, day, cnt;
+    static int[][][] Box;
+    static int[][][] pos = {{{0,-1,0},{0,1,0},{0,0,1},{0,0,-1},{1,0,0},{-1,0,0}}};
+    static LinkedList<int[]> queue = new LinkedList<>();
+    public static void main(String[] args) throws Exception{
+    	Scanner s = new Scanner(System.in);
+        M = s.nextInt();
+        N = s.nextInt();
+        H = s.nextInt();
+        Box = new int[H][N][M];
+         
+        for(int h=0; h<H; h++) {
+            for(int i=0; i<N; i++) {
+                for(int j=0; j<M; j++) {
+                    Box[h][i][j] = s.nextInt();
+                    if(Box[h][i][j]==1) {
+                        queue.offer(new int[] {h,i,j,0});
+                    }else if(Box[h][i][j]==0) {
+                        cnt++;
+                    }
+                }
+            }
+        }   
+        if(!queue.isEmpty()) {
+            bfs();
+            if(cnt>0) {
+                System.out.println("-1");
+            }else {
+                System.out.println(day);
+            }   
+        }else {
+            System.out.println(0);
+        }   
+    }
+    private static void bfs() {
+        int[] temp=new int[4];
+        while(!queue.isEmpty()) {
+            temp = queue.poll();
+            for(int i=0; i<6; i++) {
+                int nh = temp[0]+pos[0][i][0];
+                int nr = temp[1]+pos[0][i][1];
+                int nc = temp[2]+pos[0][i][2];
+                if(isOk(nh,nr,nc)) {
+                    Box[nh][nr][nc]=1;
+                    cnt--;
+                    queue.offer(new int[] {nh,nr,nc,temp[3]+1});
+                }
+            }
+        }
+        day = temp[3];
+    }
+    private static boolean isOk(int h, int r, int c) {
+        if(r>=0 && c>=0 && h>=0 && r<N && c<M && h<H && Box[h][r][c]==0) {
+            return true;
+        }
+        return false;
+    }
 }

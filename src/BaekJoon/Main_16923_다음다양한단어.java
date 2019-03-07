@@ -6,6 +6,7 @@ public class Main_16923_다음다양한단어 {
 	static String line, ans;
 	static boolean isAppend;
 	static int len, idx;
+	static char c;
 	static int[] arr = new int[26];
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16923_다음다양한단어.txt"));
@@ -16,22 +17,25 @@ public class Main_16923_다음다양한단어 {
 			arr[line.charAt(i)-'a']++;
 		}
 		if(len==26) {
-			if(line.charAt(0)!='z') {
-				idx = line.indexOf("z");
-				String subline = line.substring(idx,len);
-				String newline = line.substring(0,idx-1);
-				for(int i=0; i<subline.length(); i++) {
-					arr[subline.charAt(i)-'a']--;
-				}
-				for(int i=0; i<arr.length; i++) {
-					if(arr[i]==0) {
-						newline = newline+(char)(i+'a');
-						isAppend=true;
-						break;
+			String newline = "";
+			int cnt=25;
+			top:
+			while(cnt>0) {
+				newline = line.substring(0,cnt);
+				c = line.charAt(cnt);
+				arr[c-'a']--;		
+				if(cnt<25) {
+					for(int i=c-'a'+1; i<len; i++) {
+						if(arr[i]==0) {
+							newline+=(char)(i+'a');
+							isAppend=true;
+							ans=newline;
+							break top;
+						}
 					}
 				}
-				ans = newline;
-			}
+				cnt--;
+			}	
 		}
 		else {
 			for(int i=0; i<arr.length; i++) {
