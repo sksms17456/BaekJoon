@@ -33,8 +33,19 @@
 //첫째 줄에 계단 오르기 게임에서 얻을 수 있는 총 점수의 최댓값을 출력한다.
 package BaekJoon;
 
+import java.io.*;
+
 public class Main_2579_계단오르기 {
-	public static void main(String[] args) {
+	static int N;
+	static int[] score, floor= {1,2};
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new FileReader("res/Main_2579_계단오르기.txt"));
+//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		N = Integer.parseInt(br.readLine());
+		for(int i=0; i<N; i++) {
+			score[i] = Integer.parseInt(br.readLine());
+		}
 		
 	}
 }

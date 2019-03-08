@@ -68,7 +68,6 @@ public class Main_1916_최소비용구하기 {
 			}
 			
 		}
-		
 		st = new StringTokenizer(br.readLine());
 		start = Integer.parseInt(st.nextToken())-1;
 		end = Integer.parseInt(st.nextToken())-1;

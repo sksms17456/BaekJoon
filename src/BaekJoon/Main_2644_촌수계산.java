@@ -8,13 +8,12 @@ public class Main_2644_촌수계산{
 	static int N, x, y, n;
 	static boolean[] visit;
 	static boolean meet = false;
-	static ArrayList<ArrayList<Integer>> list;
+	static ArrayList<ArrayList<Integer>> list = new ArrayList<>();;
 	public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		visit = new boolean[N+1];
-		
-		list = new ArrayList<>();
+
 		for(int i=0; i<=N; i++) {
 			list.add(new ArrayList<Integer>());
 		}
