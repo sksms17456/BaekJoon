@@ -89,6 +89,7 @@ public class Main_1916_최소비용구하기 {
 					if(costarr[v.node][i]!=mincost && distance[i]>distance[v.node]+costarr[v.node][i]) {
 						distance[i] = distance[v.node]+costarr[v.node][i];
 						queue.offer(new vertex(i,distance[i]));
+						System.out.println(Arrays.toString(distance));
 					}
 				}
 			}

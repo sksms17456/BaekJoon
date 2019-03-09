@@ -17,15 +17,16 @@ import java.io.*;
 
 public class Main_11727_2n타일링2 {
 	static int N;
-	static int[] tile = new int[1001];
+	static int[] tile;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_11727_2n타일링2.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
+		tile = new int[N+1];
 		tile[1] = 1;
 		tile[2] = 3;
 		for(int i=3; i<tile.length; i++) {
-			tile[i] = (tile[i-1]+tile[i-2]*2)%10007;
+			tile[i] = (tile[i-1]+(tile[i-2]<<1))%10007;
 		}
 		System.out.println(tile[N]);
 	}
