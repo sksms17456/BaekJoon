@@ -46,10 +46,21 @@ package BaekJoon;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_16918_봄버맨 {
-	static int R, C, N, ni, nj;
+	static class Bomb{
+		int r;
+		int c;
+		public Bomb(int r, int c) {
+			super();
+			this.r = r;
+			this.c = c;
+		}
+		
+	}
+	static int R, C, N, cnt=2;
 	static char[][] bomb;
 	static int[][] pos = {{-1,0},{1,0},{0,1},{0,-1}};
 	public static void main(String[] args) throws Exception{
@@ -61,13 +72,33 @@ public class Main_16918_봄버맨 {
 		N = Integer.parseInt(st.nextToken());
 		bomb = new char[R][C];
 		
+		LinkedList<Bomb> bqueue = new LinkedList<>();
+		LinkedList<Bomb> queue = new LinkedList<>();
+		//0초꺼 받음
 		for(int i=0; i<R; i++) {
 			bomb[i] = br.readLine().toCharArray();
+			for(int j=0; j<C; j++) {
+				if(bomb[i][j]=='.') {
+					queue.offer(new Bomb(i,j));
+				}
+				else {
+					bqueue.offer(new Bomb(i,j));
+				}
+			}
 		}
 		
+		if(N==1) {
+			for(int i=0; i<R; i++) {
+				for(int j=0; j<C; j++) {
+					System.out.print(bomb[i][j]);
+				}
+				System.out.println();
+			}
+		}
 		
-					
+	
 	}
+	
 	private static boolean isOk(int x, int y) {
 		if(x>=0 && y>=0 && x<R && y<C) {
 			return true;
