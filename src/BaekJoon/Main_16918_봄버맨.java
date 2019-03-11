@@ -67,6 +67,7 @@ public class Main_16918_봄버맨 {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16918_봄버맨.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		R = Integer.parseInt(st.nextToken());
 		C = Integer.parseInt(st.nextToken());
 		N = Integer.parseInt(st.nextToken());
@@ -74,7 +75,7 @@ public class Main_16918_봄버맨 {
 		
 		LinkedList<Bomb> bqueue = new LinkedList<>();
 		LinkedList<Bomb> queue = new LinkedList<>();
-		//0초꺼 받음
+
 		for(int i=0; i<R; i++) {
 			bomb[i] = br.readLine().toCharArray();
 			for(int j=0; j<C; j++) {
@@ -86,17 +87,33 @@ public class Main_16918_봄버맨 {
 				}
 			}
 		}
-		
-		if(N==1) {
-			for(int i=0; i<R; i++) {
-				for(int j=0; j<C; j++) {
-					System.out.print(bomb[i][j]);
-				}
-				System.out.println();
+		int qsize = queue.size();
+		int bqsize = bqueue.size();
+		while(cnt<N) {
+			for(int i=0; i<qsize; i++) {
+				Bomb b = queue.poll();
+				bomb[b.r][b.c] = 'O';
+				bqueue.offer(new Bomb(b.r,b.c));
 			}
+			
+			for(int i=0; i<bqsize; i++) {
+				Bomb b = bqueue.poll();
+				bomb[b.r][b.c] = '.';
+				queue.offer(new Bomb(b.r,b.c));
+				for(int k=0; k<4; k++) {
+					int nr = b.r+pos[k][0];
+					int nc = b.c+pos[k][1];
+					if(isOk(nr,nc)) {
+						bomb[nr][nc] = '.';
+						queue.offer(new Bomb(b.r,b.c));
+					}
+				}
+			}
+			
+			cnt++;
 		}
 		
-	
+		
 	}
 	
 	private static boolean isOk(int x, int y) {

@@ -60,14 +60,15 @@ public class Main_16937_두스티커 {
 				continue;
 			list.add(new Sticker(h,w));
 		}
-		for(int i=0; i<list.size(); i++) {
+		for(int i=0; i<list.size()-1; i++) {
 			s1 = list.get(i);
 			for(int j=i+1; j<list.size(); j++) {
 				s2 = list.get(j);
-				if(s1.h+s2.h<=H || s1.w+s2.w<=W || s1.h+s2.h<=W || s1.w+s2.w<=H || 
-						s1.h+s2.w<=H || s1.h+s2.w<=W || s1.w+s2.h<=H || s1.w+s2.h<=W) {
-					ans = Math.max(ans, s1.area+s2.area);
-				}
+				if((s1.h+s2.h<=H && s1.w<=W && s2.w<=W)|| (s1.h+s2.h<=W && s1.w<=H && s2.w<=H)|| 
+						(s1.h+s2.w<=H && s1.w<=W && s2.h<=W)|| (s1.h+s2.w<=W  && s1.w<=H && s2.h<=H)|| 
+						(s1.w+s2.w<=H && s1.h<=W && s2.h<=W) || (s1.w+s2.w<=W && s1.h<=H && s2.h<=H) || 
+						(s1.w+s2.h<=H && s1.h<=W && s2.w<=W) || (s1.w+s2.h<=W && s1.h<=H && s2.w<=H))
+				ans = Math.max(ans, s1.area+s2.area);
 			}
 		}
 		System.out.println(ans);

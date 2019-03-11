@@ -38,13 +38,12 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_16920_확장게임 {
-	static int N, M, P, idx=1, breakcnt=0;
-	static int[] S, p;
-	static int[][] pos = {{-1,0},{1,0},{0,1},{0,-1}};
-	static char[][] field;
-	static boolean[][] visit;
+	static int N, M, P, turn=1;
+	static int[] S ,q;
+	static int[][] pos = {{0,-1},{0,1},{1,0},{-1,0}};
+	static char[][] map;
 	static boolean[] qempty;
-	static boolean isgo=false;
+	static boolean[][] visit;
 	static LinkedList<int[]>[] queue;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16920_확장게임.txt"));
@@ -53,76 +52,91 @@ public class Main_16920_확장게임 {
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 		P = Integer.parseInt(st.nextToken());
-		
-		queue = new LinkedList[P+1];
-		for(int i=0; i<P+1; i++) {
-			queue[i] = new LinkedList<int[]>();
-		}
-		p = new int[P+1];
+			
+		q = new int[P+1];
 		S = new int[P+1];
+		queue = new LinkedList[P+1];
 		qempty = new boolean[P+1];
-		st = new StringTokenizer(br.readLine());
-		for(int i=1; i<S.length; i++) {
-			S[i] = Integer.parseInt(st.nextToken());
-		}
 		visit = new boolean[N][M];
-		field = new char[N][M];
-		for(int i=0 ;i<N; i++) {
-			field[i] = br.readLine().toCharArray();
+		map = new char[N][M];
+			
+		st = new StringTokenizer(br.readLine());
+		for(int i=1; i<=P; i++) {
+			S[i] = Integer.parseInt(st.nextToken());
+		}	
+		
+		for(int i=0; i<queue.length; i++) {
+			queue[i] = new LinkedList<>();
+		}		
+		
+		for(int i=0; i<N; i++) {
+			map[i] = br.readLine().toCharArray();
 			for(int j=0; j<M; j++) {
-				if(Character.isDigit(field[i][j])) {
-					p[field[i][j]-'0']++;
-					queue[field[i][j]-'0'].offer(new int[] {i,j});
-					visit[i][j] = true;
+				if(Character.isDigit(map[i][j])) {
+					queue[map[i][j]-'0'].offer(new int[] {i,j});
+					q[map[i][j]-'0']++;
 				}
 			}
-		}
+		}	
 		
 		while(true) {
-			isgo=false;
-			if(idx>P)
-				idx=1;
-			if(!queue[idx].isEmpty()) {
-				int cnt=0;
-				while(cnt<S[idx]) {
-					int size = queue[idx].size();			
-					for(int s=0; s<size; s++) {
-						int[] temp = new int[2];
-						temp = queue[idx].poll();
-						for(int i=0; i<4; i++) {
-							int nr = temp[0]+pos[i][0];
-							int nc = temp[1]+pos[i][1];
-							if(isOk(nr,nc) && !visit[nr][nc]) {
-								queue[idx].offer(new int[] {nr,nc});
-								field[nr][nc] = (char)(idx+'0');
-								p[idx]++;
-								visit[nr][nc] = true;
-							}
-						}
-					}
-					cnt++;
-				}
+			boolean isBreak = true;
+			if(turn>P) {
+				turn=1;
+			}			
+			if(!qempty[turn]) {
+				extend();
 			}
-			if(queue[idx].isEmpty()) {
-				qempty[idx] = true;
+			
+			if(queue[turn].size()==0) {
+				qempty[turn] = true;
 			}
 			for(int i=1; i<=P; i++) {
 				if(!qempty[i]) {
-					isgo=true;
+					isBreak = false;
 					break;
 				}
 			}
-			if(!isgo) {
+			if(isBreak) {
 				break;
 			}
-			idx++;
+			turn++;
 		}
-		for(int i=1; i<P+1; i++) {
-			System.out.print(p[i]+" ");
+		
+		
+		for(int i=1; i<=P; i++) {
+			System.out.print(q[i]+" ");
 		}
 	}
+	
+	private static void extend() {
+		LinkedList<int[]> list = new LinkedList<>();
+		while(!queue[turn].isEmpty()){
+			int temp[] = queue[turn].poll();
+			visit[temp[0]][temp[1]]=true;
+			list.offer(new int[] {temp[0],temp[1],0});
+		}
+		while(!list.isEmpty()) {
+			int temp[] = list.poll();
+			for(int i=0; i<4; i++) {
+				int nr = temp[0]+pos[i][0];
+				int nc = temp[1]+pos[i][1];
+				if(isOk(nr,nc)&&temp[2]<S[turn]) {
+					map[nr][nc] = (char)(turn+'0');
+					q[turn]++;
+					list.offer(new int[] {nr,nc,temp[2]+1});
+					if(!visit[nr][nc]) {
+						visit[nr][nc]=true;
+						queue[turn].offer(new int[] {nr,nc});
+					}
+					
+				}
+			}
+		}
+	}
+	
 	private static boolean isOk(int r, int c) {
-		if(r>=0 && c>=0 && r<N && c<M && (field[r][c]=='.' || field[r][c]==(char)(idx+'0'))) {
+		if(r>=0 && c>=0 && r<N && c<M && map[r][c]=='.') {
 			return true;
 		}
 		return false;
