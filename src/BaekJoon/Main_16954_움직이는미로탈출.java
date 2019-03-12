@@ -51,7 +51,6 @@ public class Main_16954_움직이는미로탈출 {
 					}
 				}
 			}
-			
 			for(int i=6; i>=0; i--) {
 				for(int j=0; j<8; j++) {
 					map[i+1][j] = map[i][j];

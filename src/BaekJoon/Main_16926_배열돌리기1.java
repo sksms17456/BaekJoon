@@ -60,26 +60,38 @@ public class Main_16926_배열돌리기1 {
 			}
 		}
 		while(R>0) {
-			for(int i=0; i<M-1; i++) {
-				newarr[0][i] = arr[0][i+1];
-			}
-			for(int i=0; i<N-1; i++) {
-				newarr[i][M-1] = arr[i+1][M-1];
-			}
-			for(int i=M-1; i>0; i--) {
-				newarr[N-1][i] = arr[N-1][i-1];
-			}
-			for(int i=N-1; i>0; i--) {
-				newarr[i][0] = arr[i-1][0];
+			int idx = 0;
+			while(true) {
+				if(idx==N>>1-1 || idx==M>>1-1)
+					break;
+				for(int i=idx; i<M-1-idx; i++) {
+					newarr[idx][i] = arr[idx][i+1];
+				}
+				for(int i=idx; i<N-1-idx; i++) {
+					newarr[i][M-1-idx] = arr[i+1][M-1-idx];
+				}
+				for(int i=M-1-idx; i>idx; i--) {
+					newarr[N-1-idx][i] = arr[N-1-idx][i-1];
+				}
+				for(int i=N-1-idx; i>idx; i--) {
+					newarr[i][idx] = arr[i-1][idx];
+				}
+				idx++;
 			}
 			for(int i=0; i<N; i++) {
 				for(int j=0; j<M; j++) {
-					System.out.print(newarr[i][j]+" ");
+					arr[i][j] = newarr[i][j];
 				}
-				System.out.println();
 			}
 			R--;
 		}
+
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				System.out.print(newarr[i][j]+" ");
+			}
+			System.out.println();
+		}		
 		
 		
 	}
