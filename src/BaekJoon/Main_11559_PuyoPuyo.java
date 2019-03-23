@@ -35,18 +35,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Main_11559_PuyoPuyo {
-	static class puyo{
-		int r;
-		int c;
-		int color;
-		public puyo(int r, int c, int color) {
-			super();
-			this.r = r;
-			this.c = c;
-			this.color = color;
-		}
-		
-	}
 	static int cnt, ans;
 	static char[][] map = new char[12][6];
 	static boolean[][] visit = new boolean[12][6];
@@ -62,44 +50,43 @@ public class Main_11559_PuyoPuyo {
 		
 		while(true) {
 			canBreak = false;
-			
-			LinkedList<puyo> queue = new LinkedList<>();
+			LinkedList<int[]> q = new LinkedList<int[]>();
 			for(int i=0; i<12; i++) {
 				for(int j=0; j<6; j++) {
 					switch (map[i][j]) {
 					case 'R':
-						queue.offer(new puyo(i,j,17));
+						q.offer(new int[] {i,j,17});
 						break;
 					case 'G':
-						queue.offer(new puyo(i,j,6));
+						q.offer(new int[] {i,j,6});
 						break;
 					case 'B':
-						queue.offer(new puyo(i,j,1));
+						q.offer(new int[] {i,j,1});
 						break;
 					case 'P':
-						queue.offer(new puyo(i,j,15));
+						q.offer(new int[] {i,j,15});
 						break;
 					case 'Y':
-						queue.offer(new puyo(i,j,24));
+						q.offer(new int[] {i,j,24});
 						break;
 					}
 				}
 			}
 			
-			while(!queue.isEmpty()) {
-				puyo p = queue.poll();
-				LinkedList<puyo> bfsq = new LinkedList<>();
-				visit[p.r][p.c]= true;
+			while(!q.isEmpty()) {
+				int temp[] = q.poll();
+				LinkedList<int[]> bfs = new LinkedList<>();
+				visit[temp[0]][temp[1]] = true;
 				int cnt=1;
-				bfsq.offer(new puyo(p.r,p.c,p.color));
-				while(!bfsq.isEmpty()) {
-					puyo bfsp = bfsq.poll();
+				bfs.offer(new int[] {temp[0],temp[1],temp[2]});
+				while(!bfs.isEmpty()) {
+					temp = bfs.poll();
 					for(int i=0; i<4; i++) {
-						int nr = bfsp.r + pos[i][0];
-						int nc = bfsp.c + pos[i][1];
-						if(isOk(nr,nc) && !visit[nr][nc] && map[nr][nc]-'A'==bfsp.color) {
+						int nr = temp[0] + pos[i][0];
+						int nc = temp[1] + pos[i][1];
+						if(isOk(nr,nc,temp[2]) && !visit[nr][nc]) {
 							visit[nr][nc] = true;
-							bfsq.offer(new puyo(nr,nc,bfsp.color));
+							bfs.offer(new int[] {nr,nc,temp[2]});
 							cnt++;
 						}
 					}
@@ -109,16 +96,16 @@ public class Main_11559_PuyoPuyo {
 						ans++;
 						canBreak = true;
 					}
-					bfsq.offer(new puyo(p.r,p.c,p.color));
-					while(!bfsq.isEmpty()) {
-						puyo bfsp = bfsq.poll();
+					bfs.offer(new int[] {temp[0],temp[1],temp[2]});
+					map[temp[0]][temp[1]]='.';
+					while(!bfs.isEmpty()) {
+						temp = bfs.poll();
 						for(int i=0; i<4; i++) {
-							int nr = bfsp.r + pos[i][0];
-							int nc = bfsp.c + pos[i][1];
-							if(isOk(nr,nc) && visit[nr][nc] && map[nr][nc]-'A'==bfsp.color) {
-								visit[nr][nc] = false;
+							int nr = temp[0] + pos[i][0];
+							int nc = temp[1] + pos[i][1];
+							if(isOk(nr,nc,temp[2])) {
 								map[nr][nc] = '.';
-								bfsq.offer(new puyo(nr,nc,bfsp.color));
+								bfs.offer(new int[] {nr,nc,temp[2]});
 							}
 						}
 					}
@@ -149,7 +136,7 @@ public class Main_11559_PuyoPuyo {
 		System.out.println(ans);
 		
 	}
-	private static boolean isOk(int r, int c) {
-		return (r>=0 && c>=0 && r<12 && c<6) ? true:false;
+	private static boolean isOk(int r, int c, int color) {
+		return (r>=0 && c>=0 && r<12 && c<6 && map[r][c]-'A'==color) ? true:false;
 	}
 }
