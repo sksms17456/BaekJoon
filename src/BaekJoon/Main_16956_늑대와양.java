@@ -37,15 +37,9 @@ public class Main_16956_늑대와양 {
 		C = Integer.parseInt(st.nextToken());
 		pasture = new char[R][C];
 		for(int i=0; i<R; i++) {
-			Arrays.fill(pasture[i], '.');
+			pasture[i] = br.readLine().toCharArray();
 		}
 		for(int i=0; i<R; i++) {
-			line = br.readLine();
-			for(int j=0; j<C; j++) {
-				if(pasture[i][j]=='.') {
-					pasture[i][j]=line.charAt(j);
-				}
-			}
 			for(int j=0; j<C; j++) {
 				if(pasture[i][j]=='W') {
 					for(int k=0; k<4; k++) {
@@ -55,7 +49,8 @@ public class Main_16956_늑대와양 {
 							if(pasture[nr][nc]=='S') {
 								System.out.println(0);
 								System.exit(0);
-							}else if(pasture[nr][nc]=='.') {
+							}
+							else if(pasture[nr][nc]=='.') {
 								pasture[nr][nc]='D';
 							}
 						}
