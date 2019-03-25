@@ -33,6 +33,8 @@ public class Main_16959_체스판여행 {
 	static int N, sr, sc, status=0, cnt;
 	static int[][] chess;
 	static int[][] knight = {{-2,1},{-2,-1},{-1,2},{-1,-2},{1,2},{1,-2},{2,1},{2,-1}};
+	static int[][] bishop = {{1,1},{1,-1},{-1,1},{-1,-1}};
+	static int[][] rook = {{1,0},{0,1},{-1,0},{0,-1}};
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16959_체스판여행.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -42,65 +44,92 @@ public class Main_16959_체스판여행 {
 		PriorityQueue<int[]> queue = new PriorityQueue<>(new Comparator<int[]>() {
 			@Override
 			public int compare(int[] o1, int[] o2) {		
-				return o1[0]>=o2[0] ? 1:-1;
+				return o1[4]>=o2[4] ? 1:-1;
 			}
 		});
 		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<N; j++) {
 				chess[i][j] = Integer.parseInt(st.nextToken());
-				queue.offer(new int[] {chess[i][j],i,j});
+				if(chess[i][j]==1) {
+					sr = i;
+					sc = j;
+				}
 			}
 		}
-		
-		//status : 0=처음, 1=나이트, 2=비숍, 3=룩
-		top:
+		queue.offer(new int[] {chess[sr][sc],sr,sc,0,0});
+		queue.offer(new int[] {chess[sr][sc],sr,sc,1,0});
+		queue.offer(new int[] {chess[sr][sc],sr,sc,2,0});
 		while(!queue.isEmpty()) {
-			int start[] = queue.poll();
-			if(!queue.isEmpty()) {
-				int temp[] = queue.peek();
-				for(int i=0; i<8; i++) {
-					int nr = start[1]+knight[i][0];
-					int nc = start[2]+knight[i][1];
-					if(isOk(nr,nc) && nr==temp[1] && nc==temp[2]) {
-						if(status==0 || status==1) {
-							cnt++;
+			int[] temp = queue.poll();
+			if(temp[0]==N*N) {
+				System.out.println(temp[4]);
+				break;
+			}
+			int nr=0, nc=0;
+			for(int i=0; i<knight.length; i++) {
+				nr = temp[1]+knight[i][0];
+				nc = temp[2]+knight[i][1];
+				if(isOk(nr,nc)) {
+					if(temp[3]==0) {
+						if(chess[nr][nc]==temp[0]+1) {
+							queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+1});
 						}else {
-							cnt+=2;
+							queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+1});
 						}
-						status=1;
-						System.out.println(start[0]+" "+status+" "+cnt);
-						continue top;
-					}
-				}
-				if(start[1]==temp[1] || start[2]==temp[2]) {
-					if(status==0 || status==2) {
-						cnt++;
 					}else {
-						cnt+=2;
+						if(chess[nr][nc]==temp[0]+1) {
+							queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+2});
+						}else {
+							queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+2});
+						}
 					}
-					status=2;
-					System.out.println(start[0]+" "+status+" "+cnt);
-					continue top;
 				}
-				if(start[1]+start[2]==temp[1]+temp[2] || Math.abs(start[1]-temp[1])==Math.abs(start[2]-temp[2])) {
-					if(status==0 || status==3) {
-						cnt++;
-					}else {
-						cnt+=2;
+			}
+			for(int i=0; i<bishop.length; i++) {
+				for(int j=1; j<N; j++) {
+					nr = temp[1]+bishop[i][0]*j;
+					nc = temp[2]+bishop[i][1]*j;
+					if(isOk(nr,nc)) {
+						if(temp[3]==0) {
+							if(chess[nr][nc]==temp[0]+1) {
+								queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+1});
+							}else {
+								queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+1});
+							}
+						}else {
+							if(chess[nr][nc]==temp[0]+1) {
+								queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+2});
+							}else {
+								queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+2});
+							}
+						}
 					}
-					status=3;
-					System.out.println(start[0]+" "+status+" "+cnt);
-					continue top;
 				}
-				cnt+=2;
-				status=2;
-				System.out.println(start[0]+" "+status+" "+cnt);
-				continue top;
+			}
+			for(int i=0; i<rook.length; i++) {
+				for(int j=1; j<N; j++) {
+					nr = temp[1]+rook[i][0]*j;
+					nc = temp[2]+rook[i][1]*j;
+					if(isOk(nr,nc)) {
+						if(temp[3]==0) {
+							if(chess[nr][nc]==temp[0]+1) {
+								queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+1});
+							}else {
+								queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+1});
+							}
+						}else {
+							if(chess[nr][nc]==temp[0]+1) {
+								queue.offer(new int[] {temp[0]+1,nr,nc,0,temp[4]+2});
+							}else {
+								queue.offer(new int[] {temp[0],nr,nc,0,temp[4]+2});
+							}
+						}
+					}
+				}
 			}
 			
 		}
-		System.out.println(cnt);
 	}
 	private static boolean isOk(int r, int c) {
 		return (r>=0 && r<N && c>=0 && c<N) ? true: false;

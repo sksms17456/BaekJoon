@@ -35,6 +35,7 @@ package BaekJoon;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
@@ -69,6 +70,9 @@ public class Main_2643_색종이올려놓기 {
 				return 0;
 			}
 		});
+		for(int i=0; i<N; i++) {
+			System.out.println(Arrays.toString(list.get(i)));
+		}
 		for(int i=0; i<N; i++) {
 			int[] p1 = list.get(i);
 			for(int j=0; j<i; j++) {
