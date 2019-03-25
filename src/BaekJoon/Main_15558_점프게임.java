@@ -72,7 +72,7 @@ public class Main_15558_점프게임 {
 					System.out.println(1);
 					System.exit(0);
 				}
-				if(map[u[0]][u[1]+1]==1 && v[u[0]][u[1]+1]==0) {
+				if(map[u[0]][u[1]+1]==1 && u[1]+1<N+1 && v[u[0]][u[1]+1]==0) {
 					v[u[0]][u[1]+1]=1;
 					queue.offer(new int[] {u[0],u[1]+1});
 				}
@@ -81,12 +81,12 @@ public class Main_15558_점프게임 {
 					queue.offer(new int[] {u[0],u[1]-1});
 				}
 				if(u[0]==0) {
-					if(map[1][u[1]+k]==1 && v[1][u[1]+k]==0) {
+					if(map[1][u[1]+k]==1 && u[1]+k<N+1 && v[1][u[1]+k]==0) {
 						v[1][u[1]+k]=1;
 						queue.offer(new int[] {1,u[1]+k});
 					}
 				}else {
-					if(map[0][u[1]+k]==1 && v[0][u[1]+k]==0) {
+					if(map[0][u[1]+k]==1 && u[1]+k<N+1 && v[0][u[1]+k]==0) {
 						v[0][u[1]+k]=1;
 						queue.offer(new int[] {0,u[1]+k});
 					}
