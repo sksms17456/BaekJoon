@@ -50,28 +50,9 @@ public class Main_16235_나무재테크 {
 			this.c = c;
 			this.age = age;
 		}
-		public int getAge() {
-			return age;
-		}
-		public void setAge(int age) {
-			this.age = age;
-		}
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("Tree [r=");
-			builder.append(r);
-			builder.append(", c=");
-			builder.append(c);
-			builder.append(", age=");
-			builder.append(age);
-			builder.append("]");
-			return builder.toString();
-		}
-		
 	}
 	static int N, M, K;
-	static int[][] power, addpower, ground,pos= {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+	static int[][] power, addpower, pos= {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16235_나무재테크.txt"));
 //      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -81,17 +62,17 @@ public class Main_16235_나무재테크 {
 		K = Integer.parseInt(st.nextToken());
 		power = new int[N+1][N+1];
 		addpower=new int[N+1][N+1];
-		ground=new int[N+1][N+1];
 		for(int i=1; i<=N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=1; j<=N; j++) {
 				addpower[i][j]=Integer.parseInt(st.nextToken());
 			}
 		}
-		for(int i=0; i<=N; i++) {
+		for(int i=1; i<=N; i++) {
 			Arrays.fill(power[i], 5);
 		}
 		ArrayList<Tree> live = new ArrayList<>();
+		ArrayList<Tree> newlive = new ArrayList<>();
 		ArrayList<Tree> die = new ArrayList<>();
 		for(int i=0; i<M; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -101,27 +82,32 @@ public class Main_16235_나무재테크 {
 			Collections.sort(live, new Comparator<Tree>() {
 				@Override
 				public int compare(Tree o1, Tree o2) {
-					return o1.age>=o2.age ? 1:-1;
+					return o1.age-o2.age;
 				}
 			});
 			for(int i=0; i<live.size(); i++) {
 				Tree t = live.get(i);
 				if(power[t.r][t.c]>=t.age) {
 					power[t.r][t.c]-=t.age;
-					live.get(i).setAge(t.age+1);
+					newlive.add(new Tree(t.r, t.c,t.age+1));
 				}else {
-					live.remove(i);
 					die.add(new Tree(t.r, t.c, t.age/2));
 				}
 			}
+			live.clear();
+			for(int i=0; i<newlive.size(); i++) {
+				live.add(newlive.get(i));
+			}
+			newlive.clear();
 			
 			for(int i=0; i<die.size(); i++) {
 				Tree t = die.get(i);
 				power[t.r][t.c]+=t.age;
-				die.remove(i);
 			}
+			die.clear();
 			
-			for(int i=0; i<live.size(); i++) {
+			int size = live.size();
+			for(int i=0; i<size; i++) {
 				Tree t = live.get(i);
 				if(t.age%5==0) {
 					for(int j=0; j<8; j++) {

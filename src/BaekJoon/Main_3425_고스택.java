@@ -44,11 +44,10 @@ public class Main_3425_고스택 {
 	static String line;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_3425_고스택.txt"));
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+//      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		ArrayList<String> list = new ArrayList<>();
 		top:
 		while(true) {
-			ArrayList<String> list = new ArrayList<>();
 			while(true) {
 				line = br.readLine();
 				if(line.equals("END")) {
@@ -108,11 +107,12 @@ public class Main_3425_고스택 {
 						}
 						tmp1 = stack.pop();
 						tmp2 = stack.pop();
-						if(Math.abs(tmp1+tmp2)>1000000000) {
+						long res = tmp1+tmp2;
+						if(Math.abs(res)>1000000000) {
 							System.out.println("ERROR");
 							continue second;
 						}
-						stack.push(tmp1+tmp2);
+						stack.push((int)res);
 						break;
 					case "SUB":
 						if(stack.size()<2) {
@@ -121,11 +121,12 @@ public class Main_3425_고스택 {
 						}
 						tmp1 = stack.pop();
 						tmp2 = stack.pop();
-						if(Math.abs(tmp1-tmp2)>1000000000) {
+						res = tmp2-tmp1;
+						if(Math.abs(res)>1000000000) {
 							System.out.println("ERROR");
 							continue second;
 						}
-						stack.push(tmp2-tmp1);
+						stack.push((int)res);
 						break;
 					case "MUL":
 						if(stack.size()<2) {
@@ -134,11 +135,12 @@ public class Main_3425_고스택 {
 						}
 						tmp1 = stack.pop();
 						tmp2 = stack.pop();
-						if(Math.abs(tmp1*tmp2)>1000000000) {
+						res = tmp1*tmp2;
+						if(Math.abs(res)>1000000000) {
 							System.out.println("ERROR");
 							continue second;
 						}
-						stack.push(tmp2*tmp1);
+						stack.push((int)res);
 						break;
 					case "DIV":
 						if(stack.size()<2) {
@@ -152,17 +154,9 @@ public class Main_3425_고스택 {
 							continue second;
 						}
 						if(tmp1<0&&tmp2>0 || tmp1>0&&tmp2<0) {
-							if(Math.abs(Math.abs(tmp2)/Math.abs(tmp1))>1000000000) {
-								System.out.println("ERROR");
-								continue second;
-							}
-							stack.push(Math.abs(Math.abs(tmp2)/Math.abs(tmp1))*-1);
+							stack.push((Math.abs(tmp2)/Math.abs(tmp1))*-1);
 						}else {
-							if(Math.abs(Math.abs(tmp2)/Math.abs(tmp1))>1000000000) {
-								System.out.println("ERROR");
-								continue second;
-							}
-							stack.push(Math.abs(Math.abs(tmp2)/Math.abs(tmp1)));
+							stack.push(Math.abs(tmp2)/Math.abs(tmp1));
 						}
 						break;
 					case "MOD":
@@ -177,22 +171,14 @@ public class Main_3425_고스택 {
 							continue second;
 						}
 						if(tmp2>0) {
-							if(Math.abs(Math.abs(tmp2)%Math.abs(tmp1))>1000000000) {
-								System.out.println("ERROR");
-								continue second;
-							}
-							stack.push(Math.abs(Math.abs(tmp2)%Math.abs(tmp1)));
+							stack.push(Math.abs(tmp2)%Math.abs(tmp1));
 						}
 						else{
-							if(Math.abs(Math.abs(tmp2)%Math.abs(tmp1))>1000000000) {
-								System.out.println("ERROR");
-								continue second;
-							}
-							stack.push(Math.abs(Math.abs(tmp2)%Math.abs(tmp1))*-1);
+							stack.push((Math.abs(tmp2)%Math.abs(tmp1))*-1);
 						}
 						break;
 					case "END":
-						if(stack.size()!=1) {
+						if(stack.isEmpty()) {
 							System.out.println("ERROR");
 							break;
 						}
@@ -202,10 +188,6 @@ public class Main_3425_고스택 {
 						StringTokenizer st = new StringTokenizer(list.get(j));
 						String str = st.nextToken();
 						int num = Integer.parseInt(st.nextToken());
-						if(num>1000000000) {
-							System.out.println("ERROR");
-							continue second;
-						}
 						stack.push(num);
 						break;
 					}
@@ -213,6 +195,7 @@ public class Main_3425_고스택 {
 			}
 			line = br.readLine();
 			System.out.println();
+			list.clear();
 		}
 	}
 }

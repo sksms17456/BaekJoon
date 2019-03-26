@@ -1,0 +1,55 @@
+4
+1
+L-
+2
+F+ B+
+4
+U- D- L+ R+
+10
+L- U- L+ U- L- U- U- L+ U+ U+
+
+rww
+rww
+rww
+bbb
+www
+ggg
+gwg
+owr
+bwb
+gwo
+www
+rww
+
+
+2
+3
+U+ U+ F+
+3
+U+ U+ F-
+
+www
+www
+ggb
+www
+www
+gbb
+
+
+
+2
+2
+B+ L+
+2
+B+ R-
+
+obb
+oww
+oww
+bbo
+wwo
+wwo
+
+
+
+
