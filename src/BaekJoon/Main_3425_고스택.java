@@ -40,162 +40,163 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main_3425_고스택 {
-	static int N, n, tmp1, tmp2;
+	static int N;
+	static long n, tmp1, tmp2;
 	static String line;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_3425_고스택.txt"));
 //      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		ArrayList<String> list = new ArrayList<>();
 		top:
-		while(true) {
 			while(true) {
-				line = br.readLine();
-				if(line.equals("END")) {
-					list.add(line);
-					break;
-				}
-				if(line.equals("QUIT"))
-					break top;
-				list.add(line);
-			}
-			N = Integer.parseInt(br.readLine());
-			
-			second:
-			for(int i=0; i<N; i++) {
-				n = Integer.parseInt(br.readLine());
-				Stack<Integer> stack = new Stack<>();
-				stack.push(n);
-				for(int j=0; j<list.size(); j++) {
-					switch (list.get(j)) {
-					case "POP":
-						if(stack.isEmpty()) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						stack.pop();
-						break;
-					case "INV":
-						if(stack.isEmpty()) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp1 *= -1;
-						stack.push(tmp1);
-						break;
-					case "DUP":
-						if(stack.isEmpty()) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						stack.push(stack.peek());
-						break;
-					case "SWP":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						stack.push(tmp1);
-						stack.push(tmp2);
-						break;
-					case "ADD":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						long res = tmp1+tmp2;
-						if(Math.abs(res)>1000000000) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						stack.push((int)res);
-						break;
-					case "SUB":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						res = tmp2-tmp1;
-						if(Math.abs(res)>1000000000) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						stack.push((int)res);
-						break;
-					case "MUL":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						res = tmp1*tmp2;
-						if(Math.abs(res)>1000000000) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						stack.push((int)res);
-						break;
-					case "DIV":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						if(tmp1==0) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						if(tmp1<0&&tmp2>0 || tmp1>0&&tmp2<0) {
-							stack.push((Math.abs(tmp2)/Math.abs(tmp1))*-1);
-						}else {
-							stack.push(Math.abs(tmp2)/Math.abs(tmp1));
-						}
-						break;
-					case "MOD":
-						if(stack.size()<2) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						tmp1 = stack.pop();
-						tmp2 = stack.pop();
-						if(tmp1==0) {
-							System.out.println("ERROR");
-							continue second;
-						}
-						if(tmp2>0) {
-							stack.push(Math.abs(tmp2)%Math.abs(tmp1));
-						}
-						else{
-							stack.push((Math.abs(tmp2)%Math.abs(tmp1))*-1);
-						}
-						break;
-					case "END":
-						if(stack.isEmpty()) {
-							System.out.println("ERROR");
-							break;
-						}
-						System.out.println(stack.pop());
-						break;
-					default:
-						StringTokenizer st = new StringTokenizer(list.get(j));
-						String str = st.nextToken();
-						int num = Integer.parseInt(st.nextToken());
-						stack.push(num);
+				while(true) {
+					line = br.readLine();
+					if(line.equals("END")) {
+						list.add(line);
 						break;
 					}
+					if(line.equals("QUIT"))
+						break top;
+					list.add(line);
 				}
+				N = Integer.parseInt(br.readLine());
+				
+				second:
+				for(int i=0; i<N; i++) {
+					n = Long.parseLong(br.readLine());
+					Stack<Long> stack = new Stack<>();
+					stack.push(n);
+					for(int j=0; j<list.size(); j++) {
+						switch (list.get(j)) {
+						case "POP":
+							if(stack.isEmpty()) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							stack.pop();
+							break;
+						case "INV":
+							if(stack.isEmpty()) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp1 *= -1;
+							stack.push(tmp1);
+							break;
+						case "DUP":
+							if(stack.isEmpty()) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							stack.push(stack.peek());
+							break;
+						case "SWP":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							stack.push(tmp1);
+							stack.push(tmp2);
+							break;
+						case "ADD":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							long res = tmp1+tmp2;
+							if(Math.abs(res)>1000000000) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							stack.push(res);
+							break;
+						case "SUB":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							res = tmp2-tmp1;
+							if(Math.abs(res)>1000000000) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							stack.push(res);
+							break;
+						case "MUL":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							res = tmp1*tmp2;
+							if(Math.abs(res)>1000000000) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							stack.push(res);
+							break;
+						case "DIV":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							if(tmp1==0) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							if(tmp1<0&&tmp2>0 || tmp1>0&&tmp2<0) {
+								stack.push(Math.abs(Math.abs(tmp2)/Math.abs(tmp1))*-1);
+							}else {
+								stack.push(Math.abs(Math.abs(tmp2)/Math.abs(tmp1)));
+							}
+							break;
+						case "MOD":
+							if(stack.size()<2) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							tmp1 = stack.pop();
+							tmp2 = stack.pop();
+							if(tmp1==0) {
+								System.out.println("ERROR");
+								continue second;
+							}
+							if(tmp2>0) {
+								stack.push(Math.abs(tmp2%tmp1));
+							}
+							else{
+								stack.push(Math.abs(tmp2%tmp1)*-1);
+							}
+							break;
+						case "END":
+							if(stack.size()!=1) {
+								System.out.println("ERROR");
+								break;
+							}
+							System.out.println(stack.pop());
+							break;
+						default:
+							StringTokenizer st = new StringTokenizer(list.get(j));
+							String str = st.nextToken();
+							long num = Long.parseLong(st.nextToken());
+							stack.push(num);
+							break;
+						}
+					}
+				}
+				line = br.readLine();
+				System.out.println();
+				list.clear();
 			}
-			line = br.readLine();
-			System.out.println();
-			list.clear();
 		}
 	}
-}

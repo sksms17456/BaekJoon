@@ -23,6 +23,7 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
@@ -37,16 +38,14 @@ public class Main_1753_최단경로 {
 			this.n = n;
 			this.cost = cost;
 		}
-
 		@Override
 		public int compareTo(Node o) {
 			return this.cost >= o.cost ? 1:-1;
-		}
-		
+		}	
 	}
 	static int V, E, K, r, c, cost;
-	static int[][] graph;
 	static int[] dist;
+	static ArrayList<ArrayList<Node>> list = new ArrayList<>();
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_1753_최단경로.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -54,45 +53,47 @@ public class Main_1753_최단경로 {
 		StringBuilder sb = new StringBuilder();
 		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(br.readLine())-1;
+		K = Integer.parseInt(br.readLine());
 		
-		graph = new int[V][V];
-		for(int i=0; i<V; i++) {
-			Arrays.fill(graph[i], Integer.MAX_VALUE);
+		for(int i=0; i<V+1; i++) {
+			list.add(new ArrayList<Node>());
 		}
 		
-		dist = new int[V];
-		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist = new int[V+1];
+		Arrays.fill(dist, 200000);
 		dist[K] = 0;
 		
 		for(int i=0; i<E; i++) {
 			st = new StringTokenizer(br.readLine());
-			r = Integer.parseInt(st.nextToken())-1;
-			c = Integer.parseInt(st.nextToken())-1;
+			r = Integer.parseInt(st.nextToken());
+			c = Integer.parseInt(st.nextToken());
 			cost = Integer.parseInt(st.nextToken());
-			graph[r][c] = Math.min(graph[r][c], cost);
+			list.get(r).add(new Node(c,cost));
 		}
 		PriorityQueue<Node> queue = new PriorityQueue<>();
-		for(int i=0; i<V; i++) {
+		for(int i=0; i<V+1; i++) {
 			queue.offer(new Node(i,dist[i]));
 		}
 		
 		while(!queue.isEmpty()) {
 			Node node = queue.poll();
-			if(dist[node.n]>=node.cost) {
-				for(int i=0; i<V; i++) {
-					if(graph[node.n][i]!=Integer.MAX_VALUE && dist[i]>dist[node.n]+graph[node.n][i]) {
-						dist[i]=dist[node.n]+graph[node.n][i];
-						queue.offer(new Node(i,dist[i]));
+			int start = node.n;
+			if(dist[start]>=node.cost) {
+				for(int i=0; i<list.get(start).size(); i++) {
+					Node newnode = list.get(start).get(i);
+					int end = newnode.n;
+					if(dist[end]>dist[start]+newnode.cost) {
+						dist[end] = dist[start]+newnode.cost;
+						queue.offer(new Node(end,dist[end]));
 					}
 				}
 			}
 		}
-		for(int i=0; i<V; i++) {
-			if(dist[i]==Integer.MAX_VALUE) {
+		for(int i=1; i<=V; i++) {
+			if(dist[i]==200000) {
 				sb.append("INF\n");
 			}else {
-				sb.append(Integer.MIN_VALUE+dist[i]+"\n");
+				sb.append(dist[i]+"\n");
 			}
 		}
 		System.out.println(sb);
