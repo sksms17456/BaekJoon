@@ -29,7 +29,7 @@ public class Main_1600_말이되고픈원숭이 {
 		W = Integer.parseInt(st.nextToken());
 		H = Integer.parseInt(st.nextToken());
 		map = new int[H][W];
-		v = new boolean[H][W][K + 1];
+		v = new boolean[H][W][K+1];
 		for(int i=0; i<H; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<W; j++) {
@@ -44,26 +44,30 @@ public class Main_1600_말이되고픈원숭이 {
 		q.offer(new int[] {0,0,0,0});
 		while(!q.isEmpty()) {
 			int[] temp = q.poll();
-			if(temp[0]==H-1 && temp[1]==W-1) {
-				System.out.println(temp[3]);
+			int r = temp[0];
+			int c = temp[1];
+			int k = temp[2];
+			int cnt = temp[3];
+			if(r==H-1 && c==W-1) {
+				System.out.println(cnt);
 				System.exit(0);;
 			}
-			if(temp[2]<K) {
+			if(k<K) {
 				for(int i=0, len=horse.length; i<len; i++) {
-					int nr = temp[0]+horse[i][0];
-					int nc = temp[1]+horse[i][1];
-					if(isOk(nr,nc) && !v[nr][nc][temp[2]+1]) {
-						v[nr][nc][temp[2]+1]=true;
-						q.offer(new int[] {nr,nc,temp[2]+1,temp[3]+1});
+					int nr = r+horse[i][0];
+					int nc = c+horse[i][1];
+					if(isOk(nr,nc) && !v[nr][nc][k+1]) {
+						v[nr][nc][k+1]=true;
+						q.offer(new int[] {nr,nc,k+1,cnt+1});
 					}
 				}
 			}
 			for(int i=0, len=pos.length; i<len; i++) {
-				int nr = temp[0]+pos[i][0];
-				int nc = temp[1]+pos[i][1];
-				if(isOk(nr,nc) && !v[nr][nc][temp[2]]) {	
-					v[nr][nc][temp[2]]=true;
-					q.offer(new int[] {nr,nc,temp[2],temp[3]+1});
+				int nr = r+pos[i][0];
+				int nc = c+pos[i][1];
+				if(isOk(nr,nc) && !v[nr][nc][k]) {	
+					v[nr][nc][k]=true;
+					q.offer(new int[] {nr,nc,k,cnt+1});
 				}
 			}
 		}
