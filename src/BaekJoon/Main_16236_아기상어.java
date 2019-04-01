@@ -29,74 +29,63 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main_16236_아기상어 {
-	static int N, ans, sharkr, sharkc, size;
-	static int[][] arr;
+	static int N, ans, sharkr, sharkc, size, eatcnt;
+	static int[][] aquarium;
 	static int[][] pos = {{1,0},{-1,0},{0,1},{0,-1}};
 	static boolean[][] v;
 	static boolean callMom;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16236_아기상어.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		ans=0;
-		StringTokenizer st;
+
+
+//		하나를 먹어 먹을때마다 카운트세는데 카운트 상어 크기만큼 먹으면 사이즈1늘려줘
+//		먹으러갈때는 자기보다 같거나작은애들로만 갈수있다
+		
+//		입력받아
+//		받으면서 아기상어위치찾아
 		N = Integer.parseInt(br.readLine());
-		arr = new int[N][N];
+		aquarium = new int[N][N];
 		v = new boolean[N][N];
-		for(int i=0; i<N; i++){
+		StringTokenizer st;
+		for(int i=0; i<N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0; j<N; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
-				if(arr[i][j]==9) {
-					sharkr = i;
-					sharkc = j;
+				aquarium[i][j] = Integer.parseInt(st.nextToken());
+				if(aquarium[i][j]==9) {
+					sharkr=i;
+					sharkc=j;
 					size = 2;
 				}
 			}
 		}
-		
+		eatcnt=0;
+//		아기상어로부터 먹을수있는애들 찾아서 가장 가까운애기준 정렬(거리같으면 맨위왼쪽부터)
 		while(true) {
-			callMom = false;
-			bfs(sharkr, sharkc);
-			if(callMom) break;
-		}
-		System.out.println(ans);
-	}
-	private static void bfs(int sr, int sc) {
-		int eatcnt=0;
-		ArrayList<int[]> fishes = new ArrayList<>();
-		LinkedList<int[]> queue = new LinkedList<>();
-		queue.offer(new int[] {sr,sc});
-		arr[sr][sc] = 0;
-		v[sr][sc] = true;
-		while(!queue.isEmpty()) {
-			int[] tmp = queue.poll();
-			int r = tmp[0];
-			int c = tmp[1];
-			for(int i=0; i<4; i++) {
-				int nr = r+pos[i][0];
-				int nc = c+pos[i][1];
-				if(isOk(nr,nc) && !v[nr][nc]) {
-					if(arr[nr][nc]<size && arr[nr][nc]!=0) {
-						fishes.add(new int[] {nr,nc,(Math.abs(nr-r)+Math.abs(nc-c))});
-					}
-					v[nr][nc] = true;
-					queue.offer(new int[] {nr,nc});					
-				}
+			callMom=false;
+			findFood();
+			if(callMom) {
+				System.out.println(ans);
+				System.exit(0);
+			}
+			if(eatcnt==size) {
+				size+=1;
+				eatcnt=0;
 			}
 		}
-		init();
-		if(fishes.size()==0) {
-			callMom = true;
-			return;
-		}
-		Collections.sort(fishes,new Comparator<int[]>() {
+		
+	}
+	private static void findFood() {
+		LinkedList<int[]> queue = new LinkedList<>();
+		PriorityQueue<int[]> fishes = new PriorityQueue<>(new Comparator<int[]>() {
 			@Override
 			public int compare(int[] o1, int[] o2) {
-				if(o2[2]==o1[2]) {
-					if(o2[0]==o1[0]) {
+				if(o1[2]==o2[2]) {
+					if(o1[0]==o2[0]) {
 						return o1[1]-o2[1];
 					}
 					return o1[0]-o2[0];
@@ -104,55 +93,72 @@ public class Main_16236_아기상어 {
 				return o1[2]-o2[2];
 			}
 		});
-		for(int i=0; i<fishes.size(); i++) {
-			System.out.println(Arrays.toString(fishes.get(i)));
-		}
-		for(int i=0; i<fishes.size(); i++) {
-			int[] temp = fishes.get(i);
-			findfood(temp[0],temp[1]);
-			if(callMom) return;
-			init();
-			eatcnt++;
-			if(eatcnt==size) {
-				size+=1;
-				break;
+		v[sharkr][sharkc] = true;
+		aquarium[sharkr][sharkc]=0;
+		queue.offer(new int[] {sharkr, sharkc});
+		while(!queue.isEmpty()) {
+			int[] tmp = queue.poll();
+			int r = tmp[0];
+			int c = tmp[1];
+			for(int i=0; i<4; i++) {
+				int nr = r+pos[i][0];
+				int nc = c+pos[i][1];
+				if(isOk(nr,nc)) {
+					v[nr][nc] = true;
+					queue.offer(new int[] {nr,nc});
+					if(aquarium[nr][nc]!=0 && aquarium[nr][nc]<size) {
+						fishes.offer(new int[] {nr,nc,(Math.abs(sharkr-nr)+Math.abs(sharkc-nc))});
+					}
+				}
 			}
 		}
 		
+		if(fishes.size()==0) {
+			callMom=true;
+			return;
+		}
+		int[] target = fishes.poll();
+		init();
+		findRoad(target[0],target[1]);
+		
 	}
-	private static void findfood(int tr, int tc) {
+	private static void findRoad(int tr, int tc) {
 		LinkedList<int[]> queue = new LinkedList<>();
+		v[sharkr][sharkc] = true;
 		queue.offer(new int[] {sharkr, sharkc,0});
 		while(!queue.isEmpty()) {
 			int[] tmp = queue.poll();
 			int r = tmp[0];
 			int c = tmp[1];
 			int cnt = tmp[2];
-			if(r==tr && c==tc) {
-				arr[r][c] = 0;
-				sharkr = r;
-				sharkc = c;
-				ans+=cnt;
-				System.out.println(r+" "+c+" "+size+" "+cnt);
-				return;
-			}
 			for(int i=0; i<4; i++) {
 				int nr = r+pos[i][0];
 				int nc = c+pos[i][1];
-				if(isOk(nr,nc) && arr[nr][nc]<=size && !v[nr][nc]) {
+				if(nr==tr && nc==tc) {
+					sharkr = tr;
+					sharkc = tc;
+					aquarium[tr][tc]=0;
+					ans+=cnt+1;
+					eatcnt++;
+					System.out.println(tr+" "+tc+" "+cnt);
+					init();
+					return;
+				}
+				if(isOk(nr,nc) && aquarium[nr][nc]<= size) {
 					v[nr][nc] = true;
 					queue.offer(new int[] {nr,nc,cnt+1});
 				}
 			}
 		}
-		callMom=true;
 	}
-	private static boolean isOk(int r, int c){
-		return (r>=0 && c>=0 && r<N && c<N) ? true:false;
-	}
+	
 	private static void init() {
 		for(int i=0; i<N; i++) {
 			Arrays.fill(v[i], false);
 		}
+	}
+	
+	private static boolean isOk(int r, int c) {
+		return (r>=0 && c>=0 && r<N && c<N && !v[r][c]) ? true:false;
 	}
 }

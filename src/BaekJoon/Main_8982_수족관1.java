@@ -51,12 +51,66 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main_8982_수족관1 {
-	static int N;
+	static int N, r, c,sum;
+	static int[] depth = new int[40001];
+	static int[] water = new int[40001];
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_8982_수족관1.txt"));
 //      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
+		StringTokenizer st;
+		br.readLine();
+		int idx=0;
+		for(int i=0; i<N/2-1; i++) {
+			br.readLine();
+			st = new StringTokenizer(br.readLine());
+			c = Integer.parseInt(st.nextToken());
+			r = Integer.parseInt(st.nextToken());
+			for(int j=idx; j<c; j++) {
+				depth[j]=r;
+			}
+			idx=c;
+		}
+		br.readLine();
+		N = Integer.parseInt(br.readLine());
+		for(int i=0; i<N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int sidx = Integer.parseInt(st.nextToken());
+			int high = Integer.parseInt(st.nextToken());
+			int eidx = Integer.parseInt(st.nextToken());
+			for(int j=sidx; j<eidx; j++) {
+				water[j] = high;
+			}
+			for(int j=sidx-1; j>=0; j--) {
+				if(water[j]>high) {
+					continue;
+				}
+				if(water[j]<=depth[j]) {
+					if(high>depth[j]) {
+						high=depth[j];
+					}
+					water[j] = high;
+				}
+			}
+			
+			for(int j=eidx; j<c; j++) {
+				if(water[j]>high) {
+					continue;
+				}
+				if(water[j]<=depth[j]) {
+					if(high>depth[j]) {
+						high=depth[j];
+					}
+					water[j] = high;
+				}
+			}
+		}
+		for(int i=0; i<c; i++) {
+			sum+=depth[i]-water[i];
+		}
+		System.out.println(sum);
 	}
 }

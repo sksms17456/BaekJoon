@@ -33,18 +33,19 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_14890_경사로 {
-	static int N, L;
+	static int N, L, cnt;
 	static int[][] road;
 	static int[][] pos = {{0,1},{1,0}};
+	static boolean isCant, isRoad;
+	static boolean[] v;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_14890_경사로.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-		for(int t=0; t<T; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			N = Integer.parseInt(st.nextToken());
 			L = Integer.parseInt(st.nextToken());
 			road = new int[N][N];
+			v = new boolean[N];
 			for(int i=0; i<N; i++) {
 				st = new StringTokenizer(br.readLine());
 				for(int j=0; j<N; j++) {
@@ -53,14 +54,12 @@ public class Main_14890_경사로 {
 			}
 			//row길마다 검사
 			for(int i=0; i<N; i++) {
-				LinkedList<int[]> queue = new LinkedList<>();
-				queue.offer(new int[] {i,0});
+				
 			}
 			//col길마다 검사
 			for(int i=0; i<N; i++) {
 				
 			}
-		
+			System.out.println(cnt);
 		}
 	}
-}
