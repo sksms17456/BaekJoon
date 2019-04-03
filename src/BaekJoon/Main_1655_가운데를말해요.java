@@ -22,41 +22,39 @@
 package BaekJoon;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Main_1655_가운데를말해요 {
-	static int N;
+	static int N, n;
+	static PriorityQueue<Integer> left = new PriorityQueue<>(new Comparator<Integer>() {
+		@Override
+		public int compare(Integer o1, Integer o2) {
+			return o2-o1;
+		}
+	});	
+	static PriorityQueue<Integer> right = new PriorityQueue<>();
 	public static void main(String[] args) throws  Exception{
-		BufferedReader br = new BufferedReader(new FileReader("Main_1655_가운데를말해요.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("res/Main_1655_가운데를말해요.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
-		Heap h = new Heap();
-		
-		for(int n=0; n<N; n++) {
-			h.add(Integer.parseInt(br.readLine()));
-		}
-	}
-	
-	public static class Heap{
-		List<Integer> list;
-		
-		public Heap() {
-			list = new ArrayList<>();
-			list.add(-100001);
-		}
-		
-		public void add(int n) {
-			list.add(n);
-			int p = list.size()-1;
-
-			while(p<1 || list.get(p/2)>list.get(p)) {
-				int temp = list.get(p/2);
-				list.set(p/2, list.get(p));
-				list.set(p, temp);
-				p = p/2;
+		for(int i=0; i<N; i++) {
+			n = Integer.parseInt(br.readLine());
+			if(left.size()!=right.size()) {
+				right.add(n);
+			}else {
+				left.add(n);
 			}
-			System.out.println(list.toString());
-		}
+			if(left.size()>0 && right.size()>0) {
+				if(left.peek()>right.peek()) {
+					int ltemp = left.poll();
+					int rtemp = right.poll();
+					right.add(ltemp);
+					left.add(rtemp);
+				}
+			}			
+			System.out.println(left.peek());
+		}	
 	}
 }
+
