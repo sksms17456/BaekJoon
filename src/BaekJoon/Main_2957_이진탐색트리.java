@@ -23,41 +23,30 @@
 package BaekJoon;
 
 import java.io.*;
+import java.util.TreeSet;
 
 public class Main_2957_이진탐색트리 {
-	static class TreeNode {
-		int data;
-		TreeNode left;
-		TreeNode right;
-		public TreeNode(int data) {
-			super();
-			this.data = data;
-			this.left = null;
-			this.right = null;
-		}
-		public TreeNode() {
-			this.left = null;
-			this.right = null;
-		}
-		
-		public void insert(int data) {
-//			root = insertKey(root,data);
-		}
-		
-		
-	}
-	static int N, num, cnt;
+	static int N, num;
+	static long cnt;
+	static int[] high;
 	public static void main(String[] args) throws  Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_2957_이진탐색트리.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		TreeSet<Integer> tree = new TreeSet<>();
 		N = Integer.parseInt(br.readLine());
-		for(int i=0; i<N; i++) {
+		StringBuilder sb = new StringBuilder();
+		high = new int[N + 2];
+		high[0] = -1;
+		high[N + 1] = -1;
+		tree.add(0);
+		tree.add(N + 1);
+		for(int i = 0; i < N; i++) {
 			num = Integer.parseInt(br.readLine());
-			insert(num,1);
-			System.out.println(cnt);
-		}		
-	}
-	private static void insert(int num, int node) {
-		
+			high[num] = Math.max(high[tree.lower(num)] + 1, high[tree.higher(num)] + 1);
+			cnt += high[num];
+			tree.add(num);
+			sb.append(cnt).append('\n');
+		}
+		System.out.println(sb);
 	}
 }
