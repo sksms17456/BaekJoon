@@ -17,19 +17,13 @@ public class Main_1110_더하기사이클 {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_1110_더하기사이클.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
-		ans = N;
-		int tmp = ans;
+		int next = N;
 		while(true) {
-			if(ans/10>0) {
-				ans = tmp/10+tmp%10;
-				cnt++;
-			}else {
-				ans = (tmp%10)*10+tmp;
-				cnt++;
+			next = ((next/10)+(next%10))%10+next%10*10;
+			cnt++;
+			if(next==N) {
+				break;
 			}
-			System.out.println(ans);
-			if(ans==N) break;
-			tmp=ans;
 		}
 		System.out.println(cnt);
 	}

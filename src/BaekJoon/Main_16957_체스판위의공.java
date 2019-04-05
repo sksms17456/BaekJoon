@@ -24,10 +24,10 @@ import java.util.StringTokenizer;
 
 public class Main_16957_체스판위의공 {
 	static int R, C;
-	static int[][] pos = {{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}};
+	static int[][] pos = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
 	static int[][] chess;
 	static int[][][] dp;
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16957_체스판위의공.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -35,67 +35,67 @@ public class Main_16957_체스판위의공 {
 		C = Integer.parseInt(st.nextToken());
 		chess = new int[R][C];
 		dp = new int[R][C][3];
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				dp[i][j][0]=30001;
-				dp[i][j][1]=30001;
-				dp[i][j][2]=1;
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				dp[i][j][0] = 30001;
+				dp[i][j][1] = 30001;
+				dp[i][j][2] = 1;
 			}
 		}
-		for(int i=0; i<R; i++) {
+		for (int i = 0; i < R; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<C; j++) {
+			for (int j = 0; j < C; j++) {
 				chess[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				if(dp[i][j][2]!=0) {
-					dfs(i,j,0);
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				if (dp[i][j][2] != 0) {
+					dfs(i, j, 0);
 				}
 			}
 		}
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				System.out.print(dp[i][j][2]+" ");
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				System.out.print(dp[i][j][2] + " ");
 			}
 			System.out.println();
 		}
 	}
-	
+
 	private static void dfs(int r, int c, int ball) {
 		int min = Integer.MAX_VALUE;
-		int dr=0, dc=0;
-		for(int i=0; i<8; i++) {
-			int nr = r+pos[i][0];
-			int nc = c+pos[i][1];
-			if(isOk(nr,nc) && chess[nr][nc]<min) {
-				min = chess[nr][nc];
-				dr=nr;
-				dc=nc;
+		int nr = 0, nc = 0;
+		for (int i = 0; i < 8; i++) {
+			int dr = r + pos[i][0];
+			int dc = c + pos[i][1];
+			if (isOk(dr, dc) && chess[dr][dc] < min) {
+				min = chess[dr][dc];
+				nr = dr;
+				nc = dc;
 			}
 		}
-		if(min<chess[r][c]) {
-			if(dp[dr][dc][0]!=30001 && dp[dr][dc][1]!=30001) {
-				dp[r][c][0] = dp[dp[dr][dc][0]][dp[dr][dc][1]][0];
-				dp[r][c][1] = dp[dp[dr][dc][0]][dp[dr][dc][1]][1];
-				dp[dp[dr][dc][0]][dp[dr][dc][1]][2]+=ball+dp[r][c][2];
-				dp[r][c][2]=0;
+		if (min < chess[r][c]) {
+			if (dp[nr][nc][0] != 30001 && dp[nr][nc][1] != 30001) {
+				dp[r][c][0] = dp[dp[nr][nc][0]][dp[nr][nc][1]][0];
+				dp[r][c][1] = dp[dp[nr][nc][0]][dp[nr][nc][1]][1];
+				dp[dp[nr][nc][0]][dp[nr][nc][1]][2] += ball + dp[r][c][2];
+				dp[r][c][2] = 0;
 				return;
 			}
 			int n = dp[r][c][2];
-			dfs(dr,dc,ball+n);
-			dp[r][c][0]=dp[dp[dr][dc][0]][dp[dr][dc][1]][0];
-			dp[r][c][1]=dp[dp[dr][dc][0]][dp[dr][dc][1]][1];
-			dp[r][c][2]=0;
-		}else {
-			dp[r][c][0]=r;
-			dp[r][c][1]=c;
-			dp[r][c][2]+=ball;
+			dfs(nr, nc, ball + n);
+			dp[r][c][0] = dp[dp[nr][nc][0]][dp[nr][nc][1]][0];
+			dp[r][c][1] = dp[dp[nr][nc][0]][dp[nr][nc][1]][1];
+			dp[r][c][2] = 0;
+		} else {
+			dp[r][c][0] = r;
+			dp[r][c][1] = c;
+			dp[r][c][2] += ball;
 		}
 	}
-	
+
 	private static boolean isOk(int r, int c) {
-		return (r>=0 && c>=0 && r<R && c<C) ? true:false;
+		return (r >= 0 && c >= 0 && r < R && c < C) ? true : false;
 	}
 }
