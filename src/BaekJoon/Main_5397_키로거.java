@@ -24,6 +24,7 @@ public class Main_5397_키로거 {
 	    private int maxSize;
 	    private char[] stackArray;
 	    
+	    
 	    public Stack(int maxSize){	        
 	        this.maxSize = maxSize;
 	        this.stackArray = new char[maxSize];
@@ -54,18 +55,22 @@ public class Main_5397_키로거 {
 	        return item;
 	    }
 	    public String toString() {
-	    	String ans = "";
+//	    	String ans = "";
+	    	StringBuilder sb = new StringBuilder();
 	    	for(int i=0; i<top+1; i++) {
-	    		ans+=stackArray[i];
+//	    		ans+=stackArray[i];
+	    		sb.append(stackArray[i]);
 	    	}
-	    	return ans;
+	    	return sb.toString();
 	    }
 	    public String toRevString() {
-	    	String ans = "";
+//	    	String ans = "";
+	    	StringBuilder sb = new StringBuilder();
 	    	for(int i=top; i>=0; i--) {
-	    		ans+=stackArray[i];
+//	    		ans+=stackArray[i];
+	    		sb.append(stackArray[i]);
 	    	}
-	    	return ans;
+	    	return sb.toString();
 	    }
 	}
 	static int T, cursor, len;
