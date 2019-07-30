@@ -7,7 +7,7 @@ import java.util.List;
 public class Main_1927_최소힙 {
 	static int N, x;
 	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new FileReader("Main_1927_최소힙.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("res/Main_1927_최소힙.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		Heap h = new Heap();
