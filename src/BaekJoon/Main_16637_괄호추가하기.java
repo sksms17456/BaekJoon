@@ -19,92 +19,75 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Main_16637_괄호추가하기 {
-	static int N, max = Integer.MIN_VALUE;
+	static int N, len, max = Integer.MIN_VALUE;
 	static int[] v;
 	static String expression;
-	static ArrayList<Integer>calclist = new ArrayList<>();
+	static ArrayList<String> calclist = new ArrayList<>();
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16637_괄호추가하기.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		Stack<String> expstack = new Stack<>();
 		N = Integer.parseInt(br.readLine());
 		expression = br.readLine();
-		for(int i=0; i<N-2;) {
-			calclist.add(calc(new String[] {String.valueOf(expression.charAt(i)), String.valueOf(expression.charAt(i+1)), String.valueOf(expression.charAt(i+2))}));
+		for (int i = 0; i < N - 2;) {
+			calclist.add(calc(new String[] { String.valueOf(expression.charAt(i)),
+					String.valueOf(expression.charAt(i + 1)), String.valueOf(expression.charAt(i + 2)) }));
 			i += 2;
 		}
-		for(int i=0; i<N; i++) {
-			expstack.add(0, String.valueOf(expression.charAt(i)));
-		}
-		while(expstack.size()!=1){
-			int n = calc(new String[] {String.valueOf(expstack.pop()), String.valueOf(expstack.pop()), String.valueOf(expstack.pop())});
-			expstack.push(String.valueOf(n));
-		}
-		max = Integer.parseInt(expstack.pop());
-		int len = calclist.size();
-		v = new int[calclist.size()+1];
-		for(int i=1; i<=len/2; i++) {
-			selectBracket(0, calclist.size(), 0, i);
+		len = calclist.size();
+		v = new int[len + 1];
+		calcAns();
+		for (int i = 1; i <= len / 2; i++) {
+			selectBracket(0, 0, i);
 		}
 		System.out.println(max);
 	}
 
-	static void selectBracket(int idx, int size, int nowcnt, int cnt) {
-		if(nowcnt == cnt) {
+	static void selectBracket(int idx, int nowcnt, int cnt) {
+		if (nowcnt == cnt) {
 			calcAns();
 			return;
 		}
-		for(int i=idx; i<size; i++) {
-			if(i==0 && v[i]==0) {
-				v[i]=1;
-				selectBracket(i+1, size, nowcnt+1, cnt);
+		for (int i = idx; i < len; i++) {
+			if (i == 0 && v[i] == 0) {
+				v[i] = 1;
+				selectBracket(i + 1, nowcnt + 1, cnt);
 				v[i] = 0;
-			}else if(v[i-1]==0) {
-				v[i]=1;
-				selectBracket(i+1, size, nowcnt+1, cnt);
-				v[i]=0;
+			} else if (v[i - 1] == 0) {
+				v[i] = 1;
+				selectBracket(i + 1, nowcnt + 1, cnt);
+				v[i] = 0;
 			}
 		}
-		
+
 	}
-	
+
 	static void calcAns() {
-		int res = 0;
-		String newExp = "";
 		Stack<String> newExpstack = new Stack<>();
-		for(int i=0; i<expression.length(); i++) {
-			if(v[i/2]==1) {
-				newExp+=calclist.get(i/2);
-				newExpstack.add(0, String.valueOf(calclist.get(i/2)));
-				i+=2;
-			}else {
-				newExp+=expression.charAt(i);
-				newExpstack.add(0,String.valueOf(expression.charAt(i)));
+		for (int i = 0; i < N; i++) {
+			if (v[i / 2] == 1) {
+				newExpstack.add(0, calclist.get(i / 2));
+				i += 2;
+			} else {
+				newExpstack.add(0, String.valueOf(expression.charAt(i)));
 			}
 		}
-		while(newExpstack.size()!=1) {
-			newExpstack.push(String.valueOf(calc(new String[] {newExpstack.pop(), newExpstack.pop(), newExpstack.pop()})));			
+		while (newExpstack.size() != 1) {
+			newExpstack.push(
+					calc(new String[] { newExpstack.pop(), newExpstack.pop(), newExpstack.pop() }));
 		}
 		max = Math.max(max, Integer.parseInt(newExpstack.pop()));
-		
-		
 	}
-	
-	static int calc(String[] calcarr) {
-		int res = 0;
-		int num_left = Integer.parseInt(calcarr[0]);
-		int num_right = Integer.parseInt(calcarr[2]);
+
+	static String calc(String[] calcarr) {
 		switch (calcarr[1]) {
 		case "+":
-			res = num_left + num_right;
-			break;
+			return String.valueOf(Integer.parseInt(calcarr[0]) + Integer.parseInt(calcarr[2]));
 		case "-":
-			res = num_left - num_right;
-			break;
+			return String.valueOf(Integer.parseInt(calcarr[0]) - Integer.parseInt(calcarr[2]));
 		case "*":
-			res = num_left * num_right;
-			break;
+			return String.valueOf(Integer.parseInt(calcarr[0]) * Integer.parseInt(calcarr[2]));
 		}
-		return res;
+		return "";
 	}
 }

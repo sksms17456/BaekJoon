@@ -47,18 +47,52 @@ package BaekJoon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main_5213_과외맨 {
+	static class lessonMan{
+		int r;
+		int c;
+		String moveLog;
+		int cnt;
+		public lessonMan() {}
+		public lessonMan(int r, int c, String moveLog, int cnt) {
+			this.r = r;
+			this.c = c;
+			this.moveLog = moveLog;
+			this.cnt = cnt;
+		}
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("lessonMan [r=");
+			builder.append(r);
+			builder.append(", c=");
+			builder.append(c);
+			builder.append(", moveLog=");
+			builder.append(moveLog);
+			builder.append(", cnt=");
+			builder.append(cnt);
+			builder.append("]");
+			return builder.toString();
+		}
+		
+	}
 	static int N, num=1;
-	static int[][] tile, tilenum;
+	static int[][] tile, tilenum, pos= {{-1,0},{1,0},{0,-1},{0,1}}, v;
 	public static void main(String[] args) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_5213_과외맨.txt"));
 //      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		tile = new int[N][2*N];
 		tilenum = new int[N][2*N];
+		v = new int[N][2*N];
+		ArrayList<String[]> loglist = new ArrayList<>();
 		int c=0;
 		int r=0;
 		while(true) {			
@@ -94,12 +128,85 @@ public class Main_5213_과외맨 {
 				c=0;
 			}
 		}
-		for(int i=0; i<N; i++) {
-			System.out.println(Arrays.toString(tile[i]));
+//		for(int i=0; i<N; i++) {
+//			System.out.println(Arrays.toString(tile[i]));
+//		}
+//		System.out.println();
+//		for(int i=0; i<N; i++) {
+//			System.out.println(Arrays.toString(tilenum[i]));
+//		}
+		
+//		
+		//0,1에서 bfs시작하기
+		//위아래로 같은 숫자일때만 넘어가기 가능
+		//기록해야하는것 x,y,지금까지 지나온 길
+		//방문처리 해줘 bfs니깐
+		//도착지에 도착 못하면 번호가 가장 큰 타일로 이동
+		LinkedList<lessonMan> list = new LinkedList<>();
+		list.offer(new lessonMan(0,1,String.valueOf(tilenum[0][1]),1));
+		v[0][1] = 1;
+		v[0][0] = 1;
+		int check = Integer.MAX_VALUE;
+		int idx = 0;
+		lessonMan temp = new lessonMan();
+		
+		while(!list.isEmpty()) {
+			boolean isEnd = false;
+			temp = list.poll();
+			int tr = temp.r;
+			int tc = temp.c;
+			String tlog = temp.moveLog;
+			int tcnt = temp.cnt;
+			for(int i=0; i<4; i++) {
+				int nr = tr + pos[i][0];
+				int nc = tc + pos[i][1];
+				if(nr==N-1 && nc==2*N-2) {
+					System.out.println(tcnt+1);
+					System.out.println(tlog+" "+23);
+					System.exit(0);
+				}
+				if(isOk(nr,nc)) {
+					if(tilenum[nr][nc]!=tilenum[tr][tc] && tile[nr][nc]==tile[tr][tc]) {
+						isEnd = true;
+						v[nr][nc]++;
+						list.offer(new lessonMan(nr,nc,new String(tlog+" "+String.valueOf(tilenum[nr][nc])),tcnt+1));
+					}else if(tilenum[nr][nc]==tilenum[tr][tc]){
+						isEnd = true;
+						v[nr][nc]++;
+						list.offer(new lessonMan(nr,nc,new String(tlog), tcnt));
+					}
+				}
+			}
+			if(!isEnd) {
+				boolean bcheck = false;
+				String[] stemp=new String[2];
+				for(int i=0; i<loglist.size(); i++) {
+					stemp = loglist.get(i);
+					if(tlog.contains(stemp[0])) {
+						bcheck=true;
+						loglist.add(new String[] {tlog, String.valueOf(tcnt)});
+						break;
+					}
+				}
+				if(bcheck)loglist.remove(stemp);
+				else loglist.add(new String[] {tlog, String.valueOf(tcnt)});	
+			}
+			
 		}
-		System.out.println();
-		for(int i=0; i<N; i++) {
-			System.out.println(Arrays.toString(tilenum[i]));
+		for(int i=0; i<loglist.size(); i++) {
+			if(check > Integer.parseInt(loglist.get(i)[1])) {
+				check = Integer.parseInt(loglist.get(i)[1]);
+				idx = i;
+			}
+		}
+		System.out.println(check+1);
+		System.out.println(loglist.get(idx)[0]+" "+23);
+	}
+	static boolean isOk(int r, int c) {
+		if(r%2==1) {
+			return (r>=0 && r<N && c>=1 && c<2*N-1 && v[r][c]==0) ? true:false;
+		}else {
+			return (r>=0 && r<N && c>=0 && c<2*N && v[r][c]==0) ? true:false;
 		}
 	}
 }
