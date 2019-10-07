@@ -73,8 +73,7 @@ public class Main_16637_괄호추가하기 {
 			}
 		}
 		while (newExpstack.size() != 1) {
-			newExpstack.push(
-					calc(new String[] { newExpstack.pop(), newExpstack.pop(), newExpstack.pop() }));
+			newExpstack.push(calc(new String[] { newExpstack.pop(), newExpstack.pop(), newExpstack.pop() }));
 		}
 		max = Math.max(max, Integer.parseInt(newExpstack.pop()));
 	}
