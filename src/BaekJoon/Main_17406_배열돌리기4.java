@@ -82,48 +82,132 @@ package BaekJoon;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main_17406_배열돌리기4 {
-	static int N, M, K;
+	static int N, M, K, min = Integer.MAX_VALUE;
 	static int[] v;
 	static int[][] array;
 	static ArrayList<int[]> rotationlist = new ArrayList<>();
+	static Map<Integer, Integer> map = new HashMap<>();
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17406_배열돌리기4.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
+		N = toInt(st.nextToken());
+		M = toInt(st.nextToken());
+		K = toInt(st.nextToken());
 		array = new int[N][M];
 		v = new int[K];
-		for(int i=0; i<N; i++) {
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<M; j++) {
-				array[i][j] = Integer.parseInt(st.nextToken());
+			for (int j = 0; j < M; j++) {
+				array[i][j] = toInt(st.nextToken());
 			}
 		}
-		for(int i=0; i<K; i++) {
+		for (int i = 0; i < K; i++) {
 			st = new StringTokenizer(br.readLine());
-			rotationlist.add(new int[] {Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken()),Integer.parseInt(st.nextToken())});
+			rotationlist.add(new int[] { toInt(st.nextToken()) - 1, toInt(st.nextToken()) - 1, toInt(st.nextToken()) });
 		}
-		select(0);
+		select(1);
+		System.out.println(min);
 	}
-	
+
 	static void select(int cnt) {
-		if(cnt==K) {
-			System.out.println(Arrays.toString(v));
+		if (cnt == K) {
+			getRotation();
 			return;
 		}
-		for(int i=0; i<K; i++) {
-			if(v[i]==0) {
-				v[i] = cnt+1;
-				select(cnt++);
+		for (int i = 0; i < K; i++) {
+			if (v[i] == 0) {
+				v[i] = cnt;
+				select(cnt + 1);
 				v[i] = 0;
 			}
 		}
+	}
+
+	static void getRotation() {
+		int[][] newarr = copyArr();
+		for (int i = 0; i < K; i++) {
+			map.put(v[i], i);
+		}
+		for (int i = 0; i < K; i++) {
+			int[] getRotate = rotationlist.get(map.get(i));
+			getBefore(getRotate, newarr);
+		}
+		min = Math.min(min, getMin(newarr));
+	}
+
+	static void getBefore(int[] getRotate, int[][] newarr) {
+		int r = getRotate[0];
+		int c = getRotate[1];
+		int s = getRotate[2];
+		for (int i = 1; i <= s; i++) {
+			int len = i * 8 + 1;
+			int[] temp = new int[len];
+			int cnt = 1;
+			for (int j = c - i; j < c + i; j++) {
+				temp[cnt++] = newarr[r - i][j];
+			}
+			for (int j = r - i; j < r + i; j++) {
+				temp[cnt++] = newarr[j][c + i];
+			}
+			for (int j = c + i; j > c - i; j--) {
+				temp[cnt++] = newarr[r + i][j];
+			}
+			for (int j = r + i; j > r - i; j--) {
+				temp[cnt++] = newarr[j][c - i];
+			}
+			temp[0] = temp[len - 1];
+			rotate(r, c, i, temp, newarr);
+		}
+	}
+
+	static void rotate(int r, int c, int i, int[] temp, int[][] newarr) {
+		int cnt = 0;
+		for (int j = c - i; j < c + i; j++) {
+			newarr[r - i][j] = temp[cnt++];
+		}
+		for (int j = r - i; j < r + i; j++) {
+			newarr[j][c + i] = temp[cnt++];
+		}
+		for (int j = c + i; j > c - i; j--) {
+			newarr[r + i][j] = temp[cnt++];
+		}
+		for (int j = r + i; j > r - i; j--) {
+			newarr[j][c - i] = temp[cnt++];
+		}
+	}
+
+	static int getMin(int[][] newarr) {
+		int minRow = Integer.MAX_VALUE;
+		for (int i = 0; i < N; i++) {
+			int sum = 0;
+			for (int j = 0; j < M; j++) {
+				sum += newarr[i][j];
+			}
+			minRow = Math.min(minRow, sum);
+		}
+		return minRow;
+	}
+
+	static int toInt(String input) {
+		return Integer.parseInt(input);
+	}
+
+	static int[][] copyArr() {
+		int[][] newarr = new int[N][M];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				newarr[i][j] = array[i][j];
+			}
+		}
+		return newarr;
 	}
 }
