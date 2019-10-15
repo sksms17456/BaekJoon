@@ -19,96 +19,100 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main_17135_캐슬디펜스 {
-	static int N, M, D, maxkill=Integer.MIN_VALUE;
+	static int N, M, D, maxkill = Integer.MIN_VALUE;
 	static int[][] map;
-	public static void main(String[] args) throws Exception{
+
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17135_캐슬디펜스.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
 		D = Integer.parseInt(st.nextToken());
-		map = new int[N+1][M];
-		for(int i=0; i<N; i++) {
+		map = new int[N + 1][M];
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<M; j++) {
+			for (int j = 0; j < M; j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		putArcher(0,0);
+		putArcher(0, 0);
 		System.out.println(maxkill);
 	}
+
 	private static void putArcher(int cnt, int idx) {
-		if(cnt==3) {
+		if (cnt == 3) {
 			shootEnemy();
 			return;
 		}
-		for(int i=idx; i<M; i++) {
+		for (int i = idx; i < M; i++) {
 			map[N][i] = 2;
-			putArcher(cnt+1, i+1);
+			putArcher(cnt + 1, i + 1);
 			map[N][i] = 0;
 		}
 	}
+
 	private static void shootEnemy() {
-		int killcnt=0;
-		int[][] newmap = new int[N+1][M];
-		for(int i=0; i<N+1; i++) {
-			for(int j=0; j<M; j++) {
+		int killcnt = 0;
+		int[][] newmap = new int[N + 1][M];
+		for (int i = 0; i < N + 1; i++) {
+			for (int j = 0; j < M; j++) {
 				newmap[i][j] = map[i][j];
 			}
 		}
 		int arcidx = N;
-		while(arcidx>=0) {
+		while (arcidx >= 0) {
 			ArrayList<int[]> archer = new ArrayList<>();
-			for(int i=0; i<M; i++) {
-				if(newmap[arcidx][i]==2) {
-					archer.add(new int[] {arcidx,i});
+			for (int i = 0; i < M; i++) {
+				if (newmap[arcidx][i] == 2) {
+					archer.add(new int[] { arcidx, i });
 				}
 			}
 			ArrayList<int[]> enemy = new ArrayList<>();
-			for(int i=0; i<arcidx; i++) {
-				for(int j=0; j<M; j++) {
-					if(newmap[i][j]==1) {
-						enemy.add(new int[] {i,j});
+			for (int i = 0; i < arcidx; i++) {
+				for (int j = 0; j < M; j++) {
+					if (newmap[i][j] == 1) {
+						enemy.add(new int[] { i, j });
 					}
 				}
 			}
-			if(enemy.size()==0) return;
+			if (enemy.size() == 0)
+				return;
 			int enemylen = enemy.size();
-			for(int i=0; i<3; i++) {
+			for (int i = 0; i < 3; i++) {
 				int[] acrtmp = archer.get(i);
 				int acrr = acrtmp[0];
 				int acrc = acrtmp[1];
 				PriorityQueue<int[]> canShoot = new PriorityQueue<>(new Comparator<int[]>() {
 					@Override
 					public int compare(int[] o1, int[] o2) {
-						if(o1[0]==o2[0]) {
-							return o1[2]-o2[2];
+						if (o1[0] == o2[0]) {
+							return o1[2] - o2[2];
 						}
-						return o1[0]-o2[0];
+						return o1[0] - o2[0];
 					}
 				});
-				for(int j=0; j<enemylen; j++) {
+				for (int j = 0; j < enemylen; j++) {
 					int[] enmtmp = enemy.get(j);
 					int enmr = enmtmp[0];
 					int enmc = enmtmp[1];
-					canShoot.offer(new int[] {Math.abs(acrr-enmr)+Math.abs(acrc-enmc),enmr,enmc});
+					canShoot.offer(new int[] { Math.abs(acrr - enmr) + Math.abs(acrc - enmc), enmr, enmc });
 				}
 				int[] kill = canShoot.poll();
-				if(kill[0]<=D) {
+				if (kill[0] <= D) {
 					int killr = kill[1];
 					int killc = kill[2];
-					if(newmap[killr][killc]==1) {
-						newmap[killr][killc]=0;
+					if (newmap[killr][killc] == 1) {
+						newmap[killr][killc] = 0;
 						killcnt++;
 					}
-				}				
+				}
 			}
 			arcidx--;
-			for(int i=0; i<M; i++) {
-				newmap[arcidx][i] = newmap[arcidx+1][i];
+			for (int i = 0; i < M; i++) {
+				newmap[arcidx][i] = newmap[arcidx + 1][i];
 			}
 			maxkill = Math.max(killcnt, maxkill);
-		}		
+		}
 	}
 }
