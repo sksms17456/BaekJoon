@@ -22,12 +22,10 @@ package BaekJoon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main_9057_ACMUCPC {
@@ -49,102 +47,118 @@ public class Main_9057_ACMUCPC {
 	static String name, school;
 	static Map<String, Integer> schoolCount;
 	static Map<String, Integer> selectCount;
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_9057_ACMUCPC.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		T = toInt(br.readLine());
 		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		Comparator<Team> comp = new Comparator<Team>() {
+			@Override
+			public int compare(Team team1, Team team2) {
+				// TODO Auto-generated method stub
+				if (team1.solve == team2.solve) {
+					return team1.penalty - team2.penalty;
+				}
+				return team2.solve - team1.solve;
+			}
+		};
 		for (int tc = 1; tc <= T; tc++) {
 			N = toInt(br.readLine());
 			schoolCount = new HashMap<>();
 			selectCount = new HashMap<>();
 			LinkedList<Team> teamList = new LinkedList<>();
-			teamList.sort(new Comparator<Team>() {
-				@Override
-				public int compare(Team team1, Team team2) {
-					// TODO Auto-generated method stub
-					if (team1.solve == team2.solve) {
-						return team1.penalty - team2.penalty;
-					}
-					return team2.solve - team1.solve;
-				}
-			});
+
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
 				name = st.nextToken();
 				school = st.nextToken();
-				solve = toInt(st.nextToken());
-				penalty = toInt(st.nextToken());
-				teamList.offer(new Team(name, school, solve, penalty));
+				teamList.offer(new Team(name, school, toInt(st.nextToken()), toInt(st.nextToken())));
 				pushSchoolCount(school);
 			}
+			teamList.sort(comp);
+			if (N < maxSize) {
+				sb.append(teamList.getLast().name).append("\n");
+				continue;
+			}
 			rank = 0;
-			ArrayList<String> selectList = new ArrayList<>();
-			while (rank<N) {
+			LinkedList<Team> selectList = new LinkedList<>();
+			while (rank < N) {
 				Team checkTeam = teamList.poll();
-				name = checkTeam.name;
 				school = checkTeam.school;
-				solve = checkTeam.solve;
-				penalty = checkTeam.penalty;
-				if(checkSchoolCount(school)) {
-					if(checkRankCount(school)) {
-						selectList.add(name);
+				if (checkSchoolCount(school)) {
+					if (checkRankCount(school)) {
+						selectList.offer(new Team(checkTeam.name, school, checkTeam.solve, checkTeam.penalty));
 						pushSelectCount(school);
 					}
-				}else {
-					teamList.offer(new Team(name, school, solve, penalty));
+				} else {
+					teamList.offer(new Team(checkTeam.name, school, checkTeam.solve, checkTeam.penalty));
 				}
 				rank++;
 			}
-			
-			if(N<60) {
-				
-			}else {
-				int selectSize = selectList.size();
-				if(selectSize>=60) {
-					
+
+			int selectSize = selectList.size();
+
+			if (selectSize < maxSize) {
+				int diff = maxSize - selectSize;
+				while (diff > 0) {
+					selectList.offer(teamList.poll());
+					diff--;
+				}
+			} else if (selectSize > maxSize) {
+				int diff = selectSize - maxSize;
+				while (diff > 0) {
+					selectList.removeLast();
+					diff--;
 				}
 			}
+			selectList.sort(comp);
+			sb.append(selectList.getLast().name).append("\n");
+
 		}
+		System.out.println(sb);
 
 	}
-	
+
 	static boolean checkRankCount(String school) {
-		int selected = selectCount.containsKey(school) ? selectCount.get(school):0;
-		switch (rank/10) {
+		int selected = getSelectCnt(school);
+		switch (rank / 10) {
 		case 0:
-			return (selected<=3) ? true:false;
+			return (selected <= 3) ? true : false;
 		case 1:
-			return (selected<=2) ? true:false;
+			return (selected <= 2) ? true : false;
 		case 2:
-			return (selected<=1) ? true:false;
+			return (selected <= 1) ? true : false;
 		default:
-			return (selected==0) ? true:false;
+			return (selected == 0) ? true : false;
 		}
 	}
 
 	static boolean checkSchoolCount(String school) {
-		int attend = schoolCount.get(school);
-		int selected = selectCount.containsKey(school) ? selectCount.get(school):0;
-		return ((attend+1)>>1) > selected ? true:false;
+		return ((schoolCount.get(school) + 1) >> 1) > getSelectCnt(school) ? true : false;
 	}
-	
+
 	static void pushSelectCount(String school) {
 		if (selectCount.containsKey(school)) {
 			int cnt = selectCount.get(school);
-			selectCount.replace(school, cnt++);
+			selectCount.replace(school, cnt + 1);
 		} else {
 			selectCount.put(school, 1);
 		}
 	}
-	
+
 	static void pushSchoolCount(String school) {
 		if (schoolCount.containsKey(school)) {
 			int cnt = schoolCount.get(school);
-			schoolCount.replace(school, cnt++);
+			schoolCount.replace(school, cnt + 1);
 		} else {
 			schoolCount.put(school, 1);
 		}
+	}
+
+	static int getSelectCnt(String school) {
+		return selectCount.containsKey(school) ? selectCount.get(school) : 0;
 	}
 
 	static int toInt(String input) {
