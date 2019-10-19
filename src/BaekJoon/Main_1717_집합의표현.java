@@ -18,16 +18,17 @@ import java.util.StringTokenizer;
 public class Main_1717_집합의표현 {
 	static int n, m, a, b, order;
 	static int[] root;
-	public static void main(String[] args) throws Exception{
+
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_1717_집합의표현.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		StringBuilder sb = new StringBuilder();
 		n = toInt(st.nextToken());
 		m = toInt(st.nextToken());
-		root = new int[n+1];
+		root = new int[n + 1];
 		init();
-		for(int i=0; i<m; i++) {
+		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
 			order = toInt(st.nextToken());
 			a = toInt(st.nextToken());
@@ -43,28 +44,33 @@ public class Main_1717_집합의표현 {
 		}
 		System.out.println(sb);
 	}
+
 	static String hasSameRoot(int a, int b) {
-		return find(a)==find(b) ? "YES\n":"NO\n";
+		return find(a) == find(b) ? "YES\n" : "NO\n";
 	}
+
 	static int find(int n) {
-		if(root[n] == n) {
+		if (root[n] == n) {
 			return n;
-		}else {
+		} else {
 			return root[n] = find(root[n]);
 		}
 	}
+
 	static void union(int a, int b) {
 		int roota = find(a);
 		int rootb = find(b);
-		if(roota!=rootb) {
-			root[rootb]=roota;
+		if (roota != rootb) {
+			root[rootb] = roota;
 		}
 	}
+
 	static void init() {
-		for(int i=0; i<=n; i++) {
+		for (int i = 0; i <= n; i++) {
 			root[i] = i;
 		}
 	}
+
 	static int toInt(String input) {
 		return Integer.parseInt(input);
 	}
