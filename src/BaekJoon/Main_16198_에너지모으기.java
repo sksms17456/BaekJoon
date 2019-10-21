@@ -28,31 +28,34 @@ import java.util.StringTokenizer;
 public class Main_16198_에너지모으기 {
 	static int N, max = Integer.MIN_VALUE;
 	static List<Integer> marble = new ArrayList<>();;
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_16198_에너지모으기.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = toInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		for(int i=0; i<N; i++) {
+		for (int i = 0; i < N; i++) {
 			marble.add(toInt(st.nextToken()));
 		}
 		marbleComb(0, 0);
 		System.out.println(max);
 	}
+
 	static void marbleComb(int cnt, int sum) {
-		if(N==3) {
-			max = Math.max(max, sum+marble.get(0)*marble.get(2));
+		if (N == 3) {
+			max = Math.max(max, sum + marble.get(0) * marble.get(2));
 			return;
 		}
-		for(int i=1; i<N-1; i++) {
+		for (int i = 1; i < N - 1; i++) {
 			int mid = marble.get(i);
 			marble.remove(i);
 			N--;
-			marbleComb(cnt+1, sum+marble.get(i-1)*marble.get(i));
+			marbleComb(cnt + 1, sum + marble.get(i - 1) * marble.get(i));
 			marble.add(i, mid);
 			N++;
 		}
 	}
+
 	static int toInt(String input) {
 		return Integer.parseInt(input);
 	}
