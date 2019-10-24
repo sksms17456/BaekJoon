@@ -46,16 +46,16 @@ package BaekJoon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_17822_원판돌리기 {
-	static int R, C, N, target, dir, count;
-	static int[][] circle, pos= {{0,1},{0,-1},{1,0},{-1,0}};
-	static boolean isAdj, check;
+	static int R, C, N, target, dir, count, sum = 0, numCnt;
+	static int[][] circle, pos = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+	static boolean isAdj, isZero;
 	static LinkedList<int[]> queue = new LinkedList<>();
-	public static void main(String[] args) throws Exception{
+
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17822_원판돌리기.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -63,125 +63,118 @@ public class Main_17822_원판돌리기 {
 		C = toInt(st.nextToken());
 		N = toInt(st.nextToken());
 		circle = new int[R][C];
-		for(int i=0; i<R; i++) {
+		numCnt = R * C;
+		for (int i = 0; i < R; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<C; j++) {
+			for (int j = 0; j < C; j++) {
 				circle[i][j] = toInt(st.nextToken());
+				sum += circle[i][j];
 			}
 		}
-		for(int i=0; i<N; i++) {
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			target = toInt(st.nextToken());
 			dir = toInt(st.nextToken());
 			count = toInt(st.nextToken());
 			order();
+			if (isZero)
+				break;
 		}
-		int[] res = getSumCnt();
-		System.out.println(res[0]);
+		System.out.println(isZero ? 0 : sum);
 	}
+
 	static void order() {
-		for(int i=0; i<R; i++) {
-			if((i+1)%target==0) {
+		for (int i = 0; i < R; i++) {
+			if ((i + 1) % target == 0) {
 				rotation(i);
 			}
 		}
-		check = false;
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				if(circle[i][j]!=0) {
-					isAdj = false;
+		isAdj = false;
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				if (circle[i][j] != 0) {
 					checkAdj(i, j, circle[i][j]);
 				}
 			}
 		}
-		if(!check) {
+		if (!isAdj) {
 			calc();
 		}
 	}
-	static void calc() {
-		int[] sumCnt = getSumCnt();
-		int avg = sumCnt[0]!=0 ? sumCnt[0]/sumCnt[1] : 0;
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				if(circle[i][j]>avg) {
-					circle[i][j]--;
-				}else if(circle[i][j]<avg) {
-					circle[i][j]++;
-				}
-			}
-		}
-	}
-	static int[] getSumCnt() {
-		int[] sumCnt = new int[2];
-		for(int i=0; i<R; i++) {
-			for(int j=0; j<C; j++) {
-				if(circle[i][j]!=0) {
-					sumCnt[0]+=circle[i][j];
-					sumCnt[1]++;
-				}
-			}
-		}
-		return sumCnt;
-	}
-	static void checkAdj(int r, int c, int val) {
-		queue.offer(new int[] {r, c});
-		while(!queue.isEmpty()) {
-			int[] temp = queue.poll();
-			int tempr = temp[0];
-			int tempc = temp[1];
-			checkPoint(tempr, tempc, val);
-			for(int i=0; i<4; i++) {
-				int nr = tempr+pos[i][0];
-				int nc = tempc+pos[i][1];
-				if(isOk(nr, nc)) {
-					if(circle[nr][nc]==val) {
-						isAdj = true;
-						circle[nr][nc] = 0;
-						queue.offer(new int[] {nr, nc});
-					}
-				}
-			}
-			if(isAdj) {
-				circle[r][c] = 0;
-				check = true;
-			}
-		}
-		
-	}
-	static void checkPoint(int r, int c, int val) { 
-		
-		if(c==0 && circle[r][C-1]==val) {
-			circle[r][C-1] = 0;
-			queue.offer(new int[] {r, C-1});
-			isAdj=true;
-		}else if(c==C-1 && circle[r][0]==val){
-			circle[r][0] = 0;
-			queue.offer(new int[] {r, 0});
-			isAdj = true;
-		}
-	}
-	static boolean isOk(int r, int c) {
-		return (r>=0 && c>=0 && r<R && c<C) ? true:false;
-	}
-	static void printarr() {
-		for(int i=0; i<R; i++) {
-			System.out.println(Arrays.toString(circle[i]));
-		}
-		System.out.println();
-	}
+
 	static void rotation(int r) {
-		int idx = dir==1 ? count%C : C-count%C;
+		int idx = dir == 1 ? count % C : C - count % C;
 		int[] tempCircle = new int[C];
-		for(int i=idx; i<C; i++) {
-			tempCircle[i-idx] = circle[r][i];
+		for (int i = idx; i < C; i++) {
+			tempCircle[i - idx] = circle[r][i];
 		}
-		for(int i=0; i<idx; i++) {
-			tempCircle[i+C-idx] = circle[r][i];
+		for (int i = 0; i < idx; i++) {
+			tempCircle[i + C - idx] = circle[r][i];
 		}
-		for(int i=0; i<C; i++) {
+		for (int i = 0; i < C; i++) {
 			circle[r][i] = tempCircle[i];
 		}
 	}
+
+	static void checkAdj(int r, int c, int val) {
+		queue.offer(new int[] { r, c });
+		while (!queue.isEmpty()) {
+			int[] temp = queue.poll();
+			int tempr = temp[0];
+			int tempc = temp[1];
+			if (tempc == 0 || tempc == C - 1) {
+				checkPoint(tempr, tempc, val);
+			}
+			for (int i = 0; i < 4; i++) {
+				int nr = tempr + pos[i][0];
+				int nc = tempc + pos[i][1];
+				if (isOk(nr, nc, val)) {
+					erase(nr, nc, val);
+				}
+			}
+		}
+	}
+
+	static void checkPoint(int r, int c, int val) {
+		int key = c == 0 ? C - 1 : 0;
+		if (circle[r][key] == val) {
+			erase(r, key, val);
+		}
+	}
+
+	static void erase(int r, int c, int val) {
+		sum -= val;
+		numCnt--;
+		isAdj = true;
+		circle[r][c] = 0;
+		queue.offer(new int[] { r, c });
+	}
+
+	static void calc() {
+		if (sum == 0) {
+			isZero = true;
+			return;
+		}
+		float avg = (float) sum / numCnt;
+		for (int i = 0; i < R; i++) {
+			for (int j = 0; j < C; j++) {
+				if (circle[i][j] != 0) {
+					if (circle[i][j] > avg) {
+						circle[i][j]--;
+						sum--;
+					} else if (circle[i][j] < avg) {
+						circle[i][j]++;
+						sum++;
+					}
+				}
+			}
+		}
+	}
+
+	static boolean isOk(int r, int c, int val) {
+		return (r >= 0 && c >= 0 && r < R && c < C && circle[r][c] == val) ? true : false;
+	}
+
 	static int toInt(String input) {
 		return Integer.parseInt(input);
 	}
