@@ -41,16 +41,12 @@ public class Main_11048_이동하기 {
 			st = new StringTokenizer(br.readLine());
 			maze[0] += toInt(st.nextToken());
 			for (int j = 1; j < M; j++) {
-				maze[j] = getMax(toInt(st.nextToken()), j);
+				maze[j] = (maze[j - 1] > maze[j] ? maze[j - 1] : maze[j]) + toInt(st.nextToken());
 			}
 		}
 		System.out.println(maze[M - 1]);
 	}
-
-	static int getMax(int candy, int idx) {
-		return maze[idx - 1] > maze[idx] ? maze[idx - 1] + candy : maze[idx] + candy;
-	}
-
+	
 	static int toInt(String input) {
 		return Integer.parseInt(input);
 	}
