@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
 
 public class Main_17825_주사위윷놀이 {
 	static int max = Integer.MIN_VALUE;
-	static int[] horse = new int[4], num = new int[10], map = new int[41];
+	static int[] num = new int[10], score = {};
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17825_주사위윷놀이.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -33,16 +33,7 @@ public class Main_17825_주사위윷놀이 {
 		for(int i=0; i<10; i++) {
 			num[i] =toInt(st.nextToken()); 
 		}
-		goGame(0, 0);
-	}
-	static void goGame(int idx, int sum) {
-		if(idx>10) {
-			max = sum > max ? sum:max;
-			return;
-		}
-		for(int i=0; i<4; i++) {
-			
-		}
+	
 	}
 	static int toInt(String input) {
 		return Integer.parseInt(input);
