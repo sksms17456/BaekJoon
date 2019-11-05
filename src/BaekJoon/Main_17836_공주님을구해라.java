@@ -23,39 +23,13 @@ package BaekJoon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main_17836_공주님을구해라 {
-	static int R, C, limit, count = 1;
+	static int R, C, limit, count = 0, ans = Integer.MAX_VALUE;
 	static int[][] castle, pos = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-	static boolean getGram = false;
-	static LinkedList<Soldier> routeList = new LinkedList<Soldier>();
-
-	static class Soldier {
-		private int r;
-		private int c;
-		private boolean getGram;
-
-		public Soldier(int r, int c, boolean getGram) {
-			this.r = r;
-			this.c = c;
-			this.getGram = getGram;
-		}
-		
-		public int getR() {
-			return r;
-		}
-		
-		public int getC() {
-			return c;
-		}
-		
-		public boolean getGetGram() {
-			return getGram;
-		}
-	}
+	static LinkedList<int[]> routeList = new LinkedList<int[]>();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17836_공주님을구해라.txt"));
@@ -71,60 +45,56 @@ public class Main_17836_공주님을구해라 {
 				castle[i][j] = toInt(st.nextToken());
 			}
 		}
-		System.out.println(moveToRescue());
+		System.out.println(moveToRescuePrincess() <= limit ? ans : "Fail");
 	}
 
-	static String moveToRescue() {
-		routeList.offer(new Soldier(0, 0, false));
-		castle[0][0] = 3;
+	static int moveToRescuePrincess() {
+		int gramRoute = 0;
+		int end = 0;
+		moveToNextRoute(0, 0);
 		while (!routeList.isEmpty()) {
 			int size = routeList.size();
-			System.out.println();
-			for(int k=0; k<R; k++) {
-				System.out.println(Arrays.toString(castle[k]));
-			}
 			for (int k = 0; k < size; k++) {
-				Soldier currentSoldier = routeList.poll();
-				int currentR = currentSoldier.getR();
-				int currentC = currentSoldier.getC();
-				for(int i=0; i<4; i++) {
-					int nextR = currentR+pos[i][0];
+				int[] currentRoute = routeList.poll();
+				int currentR = currentRoute[0];
+				int currentC = currentRoute[1];
+				for (int i = 0; i < 4; i++) {
+					int nextR = currentR + pos[i][0];
 					int nextC = currentC + pos[i][1];
-					if(isNextRoute(nextR, nextC)) {
-						if(rescuePrincess(nextR, nextC)) {
-							return String.valueOf(count);
+					if (isNextRoute(nextR, nextC)) {
+						if (arriveAtThePrincess(nextR, nextC)) {
+							end = count + 1;
 						}
-						boolean isGetGram = currentSoldier.getGram;
-						if(!isGetGram) {
-							if(castle[nextR][nextC]==0) {
-								goNextRoute(nextR, nextC, isGetGram);
-							}else if(castle[nextR][nextC]==2) {
-								goNextRoute(nextR, nextC, !isGetGram);
-							}
-						}else {
-							goNextRoute(nextR, nextC, isGetGram);
+						if (castle[nextR][nextC] == 2) {
+							gramRoute = count + getManhattanDistance(nextR, nextC) + 1;
+							castle[nextR][nextC] = -1;
+						} else {
+							moveToNextRoute(nextR, nextC);
 						}
 					}
 				}
 			}
-			if (++count > limit) {
-				return "Fail";
-			}
+			count++;
 		}
-		return "Fail";
+		return ans = end != 0 ? (gramRoute != 0 ? Math.min(end, gramRoute) : end) : (gramRoute != 0 ? gramRoute : ans);
+
 	}
 
 	static boolean isNextRoute(int r, int c) {
-		return (r >= 0 && c >= 0 && r < R && c < C && castle[r][c] != 3) ? true : false;
+		return (r >= 0 && c >= 0 && r < R && c < C && Math.abs(castle[r][c]) != 1) ? true : false;
 	}
 
-	static boolean rescuePrincess(int r, int c) {
+	static void moveToNextRoute(int r, int c) {
+		routeList.offer(new int[] { r, c });
+		castle[r][c] = -1;
+	}
+
+	static int getManhattanDistance(int r, int c) {
+		return R - r + C - c - 2;
+	}
+
+	static boolean arriveAtThePrincess(int r, int c) {
 		return (r == R - 1 && c == C - 1) ? true : false;
-	}
-
-	static void goNextRoute(int r, int c, boolean getGram) {
-		castle[r][c] = 3;
-		routeList.offer(new Soldier(r, c, getGram));
 	}
 
 	static int toInt(String input) {
