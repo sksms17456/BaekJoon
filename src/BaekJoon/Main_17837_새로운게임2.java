@@ -45,13 +45,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main_17837_새로운게임2 {
-	static int N, K, r, c, dir, turn = 1;
+	static int N, K, r, c, dir, turn = 1, idx;
 	static int[][] color, pos = { { 0, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 }, { 1, 0 } };
 	static ArrayList<int[]>[][] chess;
 	static Map<Integer, int[]> map = new HashMap<>();
@@ -88,27 +87,28 @@ public class Main_17837_새로운게임2 {
 				int[] location = map.get(i);
 				r = location[0];
 				c = location[1];
-				for(int j=0; j<chess[r][c].size(); j++) {
-					if(chess[r][c].get(j)[0]==i) {
-						dir = chess[r][c].get(j)[1];
+				for (int j = 0; j < chess[r][c].size(); j++) {
+					if (chess[r][c].get(j)[0] == i) {
+						idx = j;
+						dir = chess[r][c].get(idx)[1];
 						int nr = r + pos[dir][0];
 						int nc = c + pos[dir][1];
-						if(isBlue(nr, nc)) {
+						if (isBlue(nr, nc)) {
 							dir = newDir();
 							int revNr = r + pos[dir][0];
 							int revNc = c + pos[dir][1];
-							horseToRev(j);
-							if(!isBlue(revNr, revNc)) {
-								if(isOverFour(revNr, revNc, j)) {
+							horseToRev();
+							if (!isBlue(revNr, revNc)) {
+								if (isOverFour(revNr, revNc)) {
 									return turn;
 								}
-								whiteOrRed(color[revNr][revNc], revNr, revNc, j);
+								whiteOrRed(color[revNr][revNc], revNr, revNc);
 							}
-						}else {
-							if(isOverFour(nr, nc, j)) {
+						} else {
+							if (isOverFour(nr, nc)) {
 								return turn;
 							}
-							whiteOrRed(color[nr][nc], nr, nc, j);
+							whiteOrRed(color[nr][nc], nr, nc);
 						}
 					}
 				}
@@ -118,20 +118,26 @@ public class Main_17837_새로운게임2 {
 		return -1;
 	}
 
-	static void horseToRev(int idx) {
+	static void horseToRev() {
 		chess[r][c].set(idx, new int[] { chess[r][c].get(idx)[0], dir });
 	}
 
-	static void whiteOrRed(int color, int nr, int nc, int idx) {
+	static void whiteOrRed(int color, int nr, int nc) {
 		int size = chess[r][c].size();
 		for (int i = idx; i < size; i++) {
 			chess[nr][nc].add(chess[r][c].get(color == 0 ? i : size - 1 - i + idx));
 			map.replace(chess[r][c].get(i)[0], new int[] { nr, nc });
 		}
-		chess[r][c] = new ArrayList<>();
+		removeAfterMove(size);
 	}
 
-	static boolean isOverFour(int nr, int nc, int idx) {
+	static void removeAfterMove(int size) {
+		for (int i = size - 1; i >= idx; i--) {
+			chess[r][c].remove(i);
+		}
+	}
+
+	static boolean isOverFour(int nr, int nc) {
 		return chess[r][c].size() - idx + chess[nr][nc].size() >= 4 ? true : false;
 	}
 
