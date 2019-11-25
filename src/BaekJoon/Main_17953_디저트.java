@@ -27,58 +27,53 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main_17953_디저트 {
-	static int day, kinds, maxSumOfSatisfaction=Integer.MIN_VALUE, sumOfSatisfaction, selectedKind;
+	static int day, kind;
 	static int[][] satisfaction;
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader("res/Main_17953_디저트.txt"));
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		day = toInt(st.nextToken());
-		kinds = toInt(st.nextToken());
-		satisfaction = new int[kinds][day];
-		for(int i=0; i<kinds; i++) {
+		kind = toInt(st.nextToken());
+		satisfaction = new int[kind][day];
+		for (int i = 0; i < kind; i++) {
 			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<day; j++) {
+			for (int j = 0; j < day; j++) {
 				satisfaction[i][j] = toInt(st.nextToken());
 			}
 		}
-		System.out.println(getMaxSumOfSatisfaction());
+
+		System.out.println(calcSatisfaction());
+
 	}
-	
-	static int getMaxSumOfSatisfaction() {
-		for(int i=0; i<kinds; i++) {
-			sumOfSatisfaction = getSumOfSatisfaction(i);
-			System.out.println(sumOfSatisfaction);
-			maxSumOfSatisfaction = maxSumOfSatisfaction > sumOfSatisfaction ? maxSumOfSatisfaction : sumOfSatisfaction;
-		}
-		return maxSumOfSatisfaction;
-	}
-	
-	static int getSumOfSatisfaction(int selected) {
-		System.out.print(selected+" ");
-		int sum = satisfaction[selected][0];
-		selectedKind = selected;
-		for(int i=1; i<day; i++) {
-			sum += getMaxSatisfaction(i);
-		}
-		return sum;
-	}
-	
-	static int getMaxSatisfaction(int day) {
-		int maxSatisfaction = 0;
-		int temp = 0;
-		for(int i=0; i<kinds; i++) {
-			int kind = i==selectedKind ? satisfaction[i][day]/2:satisfaction[i][day];
-			if(kind > maxSatisfaction) {
-				maxSatisfaction = kind;
-				temp = i; 
+
+	static int calcSatisfaction() {
+		for (int i = 1; i < day; i++) {
+			for (int j = 0; j < kind; j++) {
+				satisfaction[j][i] = getMaxSatisfaction(i, j);
 			}
 		}
-		selectedKind = temp;
-		System.out.print(selectedKind+" ");
-		return maxSatisfaction;
+		return getFinalMaxSatisfaction();
 	}
-	
+
+	static int getMaxSatisfaction(int day, int selected) {
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < kind; i++) {
+			int mySatisfaction = i == selected ? satisfaction[selected][day] / 2 : satisfaction[selected][day];
+			max = max > mySatisfaction + satisfaction[i][day - 1] ? max : mySatisfaction + satisfaction[i][day - 1];
+		}
+		return max;
+	}
+
+	static int getFinalMaxSatisfaction() {
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < kind; i++) {
+			max = max > satisfaction[i][day - 1] ? max : satisfaction[i][day - 1];
+		}
+		return max;
+	}
+
 	static int toInt(String input) {
 		return Integer.parseInt(input);
 	}
