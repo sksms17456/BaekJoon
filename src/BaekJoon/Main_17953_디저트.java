@@ -60,7 +60,7 @@ public class Main_17953_디저트 {
 	static int getMaxSatisfaction(int day, int selected) {
 		int max = Integer.MIN_VALUE;
 		for (int i = 0; i < kind; i++) {
-			int mySatisfaction = i == selected ? satisfaction[selected][day] / 2 : satisfaction[selected][day];
+			int mySatisfaction = i == selected ? satisfaction[selected][day] >> 2 : satisfaction[selected][day];
 			max = max > mySatisfaction + satisfaction[i][day - 1] ? max : mySatisfaction + satisfaction[i][day - 1];
 		}
 		return max;
